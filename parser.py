@@ -1,7 +1,7 @@
 from lexer import lexer, tokens
 import ply.yacc as yacc
 
-#test
+
 def program_all_main():
     """program_all : main"""
 
