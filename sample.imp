@@ -1,0 +1,7 @@
+# błąd: niezadeklarowana zmienna e w linii 5
+
+PROGRAM IS
+IN
+  WRITE 3;
+END
+

@@ -2,7 +2,7 @@ import ply.lex as lex
 from ply.lex import TOKEN
 
 reserved = {
-    'PROGRAM IS': 'START',
+    'PROGRAM': 'PROGRAM',
     'IN': 'IN',
     'IS': 'IS',
     'END': 'END',
