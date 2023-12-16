@@ -27,11 +27,11 @@ def DEC(p, X):
 def ADD(p, X, Y):
     p.makeInstr('ADD', X, Y)
 
-def SHL(p, X, Y):
-    p.makeInstr('SHL', X, Y)
+def SHL(p, X):
+    p.makeInstr('SHL', X)
 
-def SHR(p, X, Y):
-    p.makeInstr('SHR', X, Y)
+def SHR(p, X):
+    p.makeInstr('SHR', X)
 
 def SUB(p, X, Y):
     p.makeInstr('SUB', X, Y)
@@ -39,9 +39,16 @@ def SUB(p, X, Y):
 def RST(p, X):
     p.makeInstr('RST', X)
 
+
+def evalToRegInstr(value, p, reg):
+        set_register_const(p, reg, value)
+
 def WRITE(p, value):
-    value.evalToRegInstr(p, REG.A)
-    p.makeInstr('WRITE', value)
+    # evalToRegInstr(value, p, REG.A)
+    set_register_const(p, REG.A, value)
+    p.makeInstr('WRITE')
+
+
 
 def set_register_const(p, reg, val):
     RST(p, reg)
@@ -53,3 +60,7 @@ def set_register_const(p, reg, val):
             INC(p, reg)         # reg = reg + 1
         if i < length - 1:
             SHL(p, reg)   # reg = reg << 1
+
+
+# def LOAD_NUMBER_VALUE_TO_REGISTER(p, number, reg):
+#     set_register_const(p, reg, number)

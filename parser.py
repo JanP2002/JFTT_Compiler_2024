@@ -1,28 +1,40 @@
 from lexer import lexer, tokens
 import ply.yacc as yacc
 from Program import Program
+from NonTerminals.Main import Main
 from NonTerminals.Command import CommandWrite
+from MemoryManager import MemoryManager
+from NonTerminals.Declarations import Declarations
+from NonTerminals.Declarations import VarDeclaration
 
 
 def p_program_all_main(p):
     """program_all : main"""
-    Program(p[1])
+    p[0] = Program(p[1])
 
 
 def p_main_commands(p):
     """main : PROGRAM IS IN commands END"""
-    print("abc")
+    p[0] = Main([], p[4])
 
 
 def p_main_declarations_commands(p):
     """main : PROGRAM IS declarations IN commands END"""
-    print("abce")
+    declarations = Declarations(p[3])
+    p[0] = Main(declarations, p[5])
 
 
-def p_declarations_empty(p):
-    """declarations : """
-    p[0] = []
+def p_declarations_append(p):
+    """declarations : declarations pid"""
+    if not p[1]:
+        p[1] = []
 
+    p[1].append( VarDeclaration( p[2] ))
+    p[0] = p[1]
+
+def p_declerations(p):
+    """declarations : pid"""
+    p[0] = [VarDeclaration( p[1] )]
 
 def p_commands_append(p):
     """commands  : commands command"""
@@ -62,8 +74,8 @@ def p_command_WRITE(p):
 
 
 def p_value_num(p):
-    """value    : num"""
-    # p[0] = Number(p[1])
+    """value   : num"""
+    p[0] = p[1]
 
 
 # def p_identifier(p):
