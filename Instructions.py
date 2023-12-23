@@ -1,66 +1,79 @@
 from Register import REG
 
 
-def GET(p, reg):
-    p.makeInstr('GET', reg)
+def makeInstr(instr, X="", Y=""):
+    instr_str = "%s %s %s" % (instr, X, Y)
+    # self.inc_counter()
+    # self.instructions.append(instr_str)
+    return instr_str
+
+def GET(reg):
+    return makeInstr('GET', reg)
 
 
-def STORE(p, reg):
-    p.makeInstr('STORE', reg)
+def STORE(reg):
+    return makeInstr('STORE', reg)
 
 
-def LOAD(p, reg):
-    p.makeInstr('LOAD', reg)
+def LOAD(reg):
+    return makeInstr('LOAD', reg)
 
 
-def INC(p, reg):
-    p.makeInstr('INC', reg)
+def INC(reg):
+    return makeInstr('INC', reg)
 
 
-def JUMP(p, j):
-    p.makeInstr('JUMP', j)
+def JUMP(j):
+    return makeInstr('JUMP', j)
 
 
-def DEC(p, X):
-    p.makeInstr('DEC', X)
+def DEC( X):
+    return makeInstr('DEC', X)
 
-def ADD(p, X, Y):
-    p.makeInstr('ADD', X, Y)
+def ADD( X, Y):
+    return makeInstr('ADD', X, Y)
 
-def SHL(p, X):
-    p.makeInstr('SHL', X)
+def SHL( X):
+    return makeInstr('SHL', X)
 
-def SHR(p, X):
-    p.makeInstr('SHR', X)
+def SHR( X):
+    return makeInstr('SHR', X)
 
-def SUB(p, X, Y):
-    p.makeInstr('SUB', X, Y)
+def SUB( X, Y):
+    return makeInstr('SUB', X, Y)
 
-def RST(p, X):
-    p.makeInstr('RST', X)
-
-
-def evalToRegInstr(value, p, reg):
-        set_register_const(p, reg, value)
-
-def WRITE(p, value):
-    # evalToRegInstr(value, p, REG.A)
-    set_register_const(p, REG.A, value)
-    p.makeInstr('WRITE')
+def RST( X):
+    return makeInstr('RST', X)
 
 
+def evalToRegInstr(value,  reg):
+    return set_register_const( reg, value)
 
-def set_register_const(p, reg, val):
-    RST(p, reg)
+def WRITE(value):
+    # evalToRegInstr(value,  REG.A)
+    asm_code = set_register_const( REG.A, value)
+    print(type(asm_code))
+    print(type(makeInstr('WRITE')))
+    asm_code.append(makeInstr('WRITE'))
+    return asm_code
+
+
+
+def set_register_const( reg, val):
+    asm_code = []
+    asm_code.append(RST(reg))
 
     bin_val = bin(val)[2:]   # number to binary representation
     length = len(bin_val)    # how many digits
     for i, digit in enumerate(bin_val):
         if digit == '1':
-            INC(p, reg)         # reg = reg + 1
+            asm_code.append(INC( reg))         # reg = reg + 1
         if i < length - 1:
-            SHL(p, reg)   # reg = reg << 1
+            asm_code.append(SHL( reg))   # reg = reg << 1
+    return asm_code
 
 
-# def LOAD_NUMBER_VALUE_TO_REGISTER(p, number, reg):
-#     set_register_const(p, reg, number)
+def HALT(p):
+    return makeInstr('HALT')
+# def LOAD_NUMBER_VALUE_TO_REGISTER( number, reg):
+#     set_register_const( reg, number)

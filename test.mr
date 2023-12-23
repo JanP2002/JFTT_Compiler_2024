@@ -1,6 +1,7 @@
+JUMP :main 
 RST a 
 INC a 
 SHL a 
 INC a 
 WRITE  
-HALT
+HALT  

@@ -7,21 +7,26 @@ from MemoryManager import MemoryManager
 from NonTerminals.Declarations import Declarations
 from NonTerminals.Declarations import VarDeclaration
 
-
+memory_Manager = MemoryManager()
+# register_Manager = RegisterManager()
 def p_program_all_main(p):
     """program_all : main"""
-    p[0] = Program(p[1])
+    p[0] = Program(p[1], memory_Manager)
 
+
+# def p_procedues_wih_decl(p):
+#     """procedures: empy"""
 
 def p_main_commands(p):
     """main : PROGRAM IS IN commands END"""
-    p[0] = Main([], p[4])
+    p[0] = Main([], p[4], memory_Manager)
 
 
 def p_main_declarations_commands(p):
     """main : PROGRAM IS declarations IN commands END"""
     declarations = Declarations(p[3])
-    p[0] = Main(declarations, p[5])
+    print(p[5])
+    p[0] = Main(declarations, p[5], memory_Manager)
 
 
 def p_declarations_append(p):

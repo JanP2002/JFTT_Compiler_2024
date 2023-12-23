@@ -15,7 +15,12 @@ class MemoryManager:
 
     def get_address(self, pid):
         #TODO: Obsluga wyjatku
-        return self.symbol_table.get(pid)
+        try:
+            address = self.symbol_table[pid]
+            return address
+        except KeyError:
+            raise MemoryManagerException(f"Proba uzycia niezadeklaroanej zmiennej+ {pid}")
+
 
 
 class MemoryManagerException(Exception):

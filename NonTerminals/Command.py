@@ -15,4 +15,4 @@ class CommandWrite(Command):
         self.value = value
 
     def translate(self, p):
-        Instructions.WRITE(p, self.value)
+        return Instructions.WRITE(self.value)

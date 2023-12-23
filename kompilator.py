@@ -18,7 +18,7 @@ try:
     data = read_file(inputFile)
     print("Compiling file '%s'" % inputFile)
     program = parser.parse(data, lexer, tracking=True)
-    output = program.translate()
+    output = program.get_asm_code()
     write_to_file(outFile, output)
     print("Output file: '%s'" % outFile)
 except Exception as err:
