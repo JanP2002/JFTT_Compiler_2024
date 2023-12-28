@@ -1,4 +1,5 @@
 from MemoryManager import MemoryManager
+from MemoryManager import MemoryManagerException
 from Register import REG
 
 
@@ -60,10 +61,35 @@ def write_num(num: int):
 
 def write_pid(pid):
     memory_manager: MemoryManager = MemoryManager()
-    address = memory_manager.get_address(pid)
+    declaration = memory_manager.get_variable(pid)
+    if not declaration.is_initialized:
+        raise MemoryManagerException("Blad w linii %i: Zmienna %s nie jest zainicjalizowana" % (-1, declaration.pid))
+    address = declaration.get_memory_id()
     asm_code = set_register_const(REG.B, address)
     asm_code.append(makeInstr('LOAD', REG.B.value))
     asm_code.append(makeInstr('WRITE'))
+    return asm_code
+
+
+def read_pid(pid):
+    memory_manager: MemoryManager = MemoryManager()
+    declaration = memory_manager.get_variable(pid)
+    address = declaration.get_memory_id()
+    asm_code = [makeInstr('READ')]
+    asm_code.extend(set_register_const(REG.B, address))
+    asm_code.append(makeInstr('STORE', REG.B.value))
+    declaration.is_initialized = True
+    return asm_code
+
+
+def pid_assign_number(pid, number):
+    memory_manager: MemoryManager = MemoryManager()
+    declaration = memory_manager.get_variable(pid)
+    address = declaration.get_memory_id()
+    asm_code = set_register_const(REG.A, number)
+    asm_code.extend(set_register_const(REG.B, address))
+    asm_code.append(makeInstr('STORE', REG.B.value))
+    declaration.is_initialized = True
     return asm_code
 
 

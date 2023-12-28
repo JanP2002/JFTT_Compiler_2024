@@ -29,7 +29,6 @@ class Main:
     #     self.inc_counter()
     #     self.instructions.append(instr_str)
 
-
     def process_commands(self):
         for com in self.commands:
             self.instructions.extend(com.translate(self))

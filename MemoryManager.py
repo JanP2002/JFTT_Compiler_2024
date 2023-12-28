@@ -4,7 +4,6 @@ from NonTerminals.Declarations import VarDeclaration
 class MemoryManager:
 
     _instance = None
-    # memory_manager = None
     symbol_table = dict()
     next_free = 0
 

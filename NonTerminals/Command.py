@@ -25,3 +25,23 @@ class CommandWritePid(Command):
 
     def translate(self, p):
         return Instructions.write_pid(self.pid)
+
+
+class CommandReadPid(Command):
+    def __init__(self, pid):
+        super(CommandReadPid, self).__init__()
+        self.pid = pid
+
+    def translate(self, p):
+        return Instructions.read_pid(self.pid)
+
+
+class CommandPidAssignNumber(Command):
+    def __init__(self, pid, number, line_number):
+        super(CommandPidAssignNumber, self).__init__()
+        self.pid = pid
+        self.number = number
+        self.lineNumber = line_number
+
+    def translate(self, p):
+        return Instructions.pid_assign_number(self.pid, self.number)

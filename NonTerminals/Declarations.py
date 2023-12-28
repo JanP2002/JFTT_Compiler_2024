@@ -1,13 +1,3 @@
-
-# class Declarations():
-#     def __init__(self, decl_list):
-#         self.declarations = decl_list
-#
-#     # def append_var_declaration(self, pid):
-#     #     var_decl = VarDeclaration(self.memory_manager, pid)
-#     #     self.declarations.append(var_decl)
-
-
 class VarDeclaration:
     def __init__(self, pid, is_arr=False, is_local=False, line_number=-1):
         self.pid = pid

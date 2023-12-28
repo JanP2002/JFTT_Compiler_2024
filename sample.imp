@@ -8,7 +8,10 @@
 PROGRAM IS
     a, b, c #comm
 IN
-  WRITE a; #def
+    READ c; #def
+    b := 10;
+    WRITE b;
+    WRITE c;
 END
 
 

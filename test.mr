@@ -1,5 +1,25 @@
 JUMP :main 
+READ  
 RST b 
+INC b 
+SHL b 
+STORE b 
+RST a 
+INC a 
+SHL a 
+SHL a 
+INC a 
+SHL a 
+RST b 
+INC b 
+STORE b 
+RST b 
+INC b 
+LOAD b 
+WRITE  
+RST b 
+INC b 
+SHL b 
 LOAD b 
 WRITE  
 HALT  
