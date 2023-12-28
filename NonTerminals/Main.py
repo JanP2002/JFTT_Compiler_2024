@@ -1,8 +1,15 @@
+from NonTerminals.Declarations import VarDeclaration
+from typing import List
 from MemoryManager import MemoryManager
+
+
 class Main:
 
-    def __init__(self, declarations, commands):
+    def __init__(self, declarations: List[VarDeclaration], commands):
         self.declarations = declarations
+        memory_manager = MemoryManager()
+        for declaration in declarations:
+            memory_manager.add_variable(declaration)
         self.commands = commands
         self.instructions = []
         # self.asm_code = ""

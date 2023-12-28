@@ -1,7 +1,5 @@
 JUMP :main 
-RST a 
-INC a 
-SHL a 
-SHL a 
+RST b 
+LOAD b 
 WRITE  
 HALT  

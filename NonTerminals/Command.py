@@ -1,5 +1,4 @@
 import Instructions
-from MemoryManager import memory_manager
 
 
 class Command:
@@ -25,4 +24,4 @@ class CommandWritePid(Command):
         self.pid = pid
 
     def translate(self, p):
-        return Instructions.write_pid(self.pid, memory_manager)
+        return Instructions.write_pid(self.pid)

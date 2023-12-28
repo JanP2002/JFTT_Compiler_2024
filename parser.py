@@ -3,8 +3,8 @@ import ply.yacc as yacc
 from Program import Program
 from NonTerminals.Main import Main
 from NonTerminals.Command import CommandWriteNum, CommandWritePid
-from NonTerminals.Declarations import Declarations
 from NonTerminals.Declarations import VarDeclaration
+from MemoryManager import MemoryManager
 
 
 # register_Manager = RegisterManager()
@@ -25,22 +25,28 @@ def p_main_commands(p):
 
 def p_main_declarations_commands(p):
     """main : PROGRAM IS declarations IN commands END"""
-    declarations = Declarations(p[3])
-    print(declarations.declarations)
-    p[0] = Main(declarations, p[5])
+    # declarations = Declarations(p[3])
+    # print(declarations.declarations)
+    # print(*p[3])
+    p[0] = Main(p[3], p[5])
 
 
 def p_declarations_append(p):
     """declarations : declarations COMMA pid"""
     if not p[1]:
         p[1] = []
-
-    p[1].append( VarDeclaration( p[2] ))
+    # decl1 = VarDeclaration(p[1], False, False, -1)
+    # print(decl1.to_string())
+    # p[1].append(decl1)
+    # p[0] = p[1]
+    decl1 = VarDeclaration(p[3], False, False, -1)
+    p[1].append(decl1)
     p[0] = p[1]
+
 
 def p_declerations(p):
     """declarations : pid"""
-    p[0] = [VarDeclaration( p[1] )]
+    p[0] = [VarDeclaration( p[1], False, False, -1)]
 
 def p_commands_append(p):
     """commands  : commands command"""

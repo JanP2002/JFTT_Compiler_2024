@@ -58,18 +58,17 @@ def write_num(num: int):
     return asm_code
 
 
-def write_pid(pid, m_manager: MemoryManager):
-    address = m_manager.get_address(pid)
+def write_pid(pid):
+    memory_manager: MemoryManager = MemoryManager()
+    address = memory_manager.get_address(pid)
     asm_code = set_register_const(REG.B, address)
     asm_code.append(makeInstr('LOAD', REG.B.value))
     asm_code.append(makeInstr('WRITE'))
     return asm_code
 
 
-
 def set_register_const( reg, val):
-    asm_code = []
-    asm_code.append(RST(reg))
+    asm_code = [RST(reg)]
 
     bin_val = bin(val)[2:]   # number to binary representation
     length = len(bin_val)    # how many digits
