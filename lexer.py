@@ -13,7 +13,7 @@ reserved = {
 tokens = ['ASSIGN', 'SEMICOLON', 'COMMA', 'num', 'pid'] + list(reserved.values())
 
 t_ignore = ' \t'
-t_ignore_COMMENT = r'^[#].*\n'
+t_ignore_COMMENT = r'\#(.*?(\\\n)*)+\n'
 t_SEMICOLON = r';'
 t_COMMA = r','
 t_ASSIGN = r':='

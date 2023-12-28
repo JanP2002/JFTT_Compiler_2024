@@ -1,8 +1,14 @@
 # błąd: niezadeklarowana zmienna e w linii 5
-
+# a > 1
+# a ^ b mod c
+# ? 1234567890
+# ? 1234567890987654321
+# ? 987654321
+# > 674106858
 PROGRAM IS
-    a, b, c
+    a, b, c #comm
 IN
-  WRITE a;
+  WRITE a; #def
 END
+
 

@@ -7,9 +7,9 @@ def read_file(filename):
         return file.read()
 
 
-def write_to_file(filename, data):
+def write_to_file(filename, content):
     with open(filename, "w") as file:
-        file.write(data)
+        file.write(content)
 
 
 inputFile = sys.argv[1]
