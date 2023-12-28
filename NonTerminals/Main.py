@@ -1,8 +1,7 @@
 from MemoryManager import MemoryManager
 class Main:
 
-    def __init__(self, declarations, commands, m_manager: MemoryManager):
-        self.memory_manager = m_manager
+    def __init__(self, declarations, commands):
         self.declarations = declarations
         self.commands = commands
         self.instructions = []
@@ -22,6 +21,7 @@ class Main:
     #     instr_str = "%s %s %s" % (instr, X, Y)
     #     self.inc_counter()
     #     self.instructions.append(instr_str)
+
 
     def process_commands(self):
         for com in self.commands:

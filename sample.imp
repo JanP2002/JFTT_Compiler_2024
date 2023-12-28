@@ -1,7 +1,8 @@
 # błąd: niezadeklarowana zmienna e w linii 5
 
 PROGRAM IS
+    a, b, c
 IN
-  WRITE 3;
+  WRITE a;
 END
 

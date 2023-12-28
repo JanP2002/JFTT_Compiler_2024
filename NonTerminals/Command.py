@@ -1,4 +1,5 @@
 import Instructions
+from MemoryManager import memory_manager
 
 
 class Command:
@@ -9,10 +10,19 @@ class Command:
         raise Exception("generateCode() not defined for %s" % self.__class__)
 
 
-class CommandWrite(Command):
-    def __init__(self, value):
-        super(CommandWrite, self).__init__()
-        self.value = value
+class CommandWriteNum(Command):
+    def __init__(self, num):
+        super(CommandWriteNum, self).__init__()
+        self.num = num
 
     def translate(self, p):
-        return Instructions.WRITE(self.value)
+        return Instructions.write_num(self.num)
+
+
+class CommandWritePid(Command):
+    def __init__(self, pid):
+        super(CommandWritePid, self).__init__()
+        self.pid = pid
+
+    def translate(self, p):
+        return Instructions.write_pid(self.pid, memory_manager)

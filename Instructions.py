@@ -1,3 +1,4 @@
+from MemoryManager import MemoryManager
 from Register import REG
 
 
@@ -49,11 +50,18 @@ def RST( X):
 def evalToRegInstr(value,  reg):
     return set_register_const( reg, value)
 
-def WRITE(value):
+
+def write_num(num: int):
     # evalToRegInstr(value,  REG.A)
-    asm_code = set_register_const( REG.A, value)
-    print(type(asm_code))
-    print(type(makeInstr('WRITE')))
+    asm_code = set_register_const( REG.A,num)
+    asm_code.append(makeInstr('WRITE'))
+    return asm_code
+
+
+def write_pid(pid, m_manager: MemoryManager):
+    address = m_manager.get_address(pid)
+    asm_code = set_register_const(REG.B, address)
+    asm_code.append(makeInstr('LOAD', REG.B.value))
     asm_code.append(makeInstr('WRITE'))
     return asm_code
 
