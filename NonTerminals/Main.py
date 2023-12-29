@@ -12,7 +12,6 @@ class Main:
             memory_manager.add_variable(declaration, declaration.line_number)
         self.commands = commands
         self.instructions = []
-        # self.asm_code = ""
         self.process_commands()
 
 
@@ -28,6 +27,7 @@ class Main:
     #     instr_str = "%s %s %s" % (instr, X, Y)
     #     self.inc_counter()
     #     self.instructions.append(instr_str)
+
 
     def process_commands(self):
         for com in self.commands:

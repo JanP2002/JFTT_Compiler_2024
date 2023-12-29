@@ -1,4 +1,4 @@
-from NonTerminals.Declarations import VarDeclaration, VarLocalDeclaration, VarParamDeclaration
+from NonTerminals.Declarations import VarDeclaration, VarParamDeclaration
 
 
 class MemoryManager:
@@ -26,7 +26,7 @@ class MemoryManager:
             declaration.set_memory_id(self.allocate_variable())
             self.symbol_table.update({declaration.pid: declaration})
 
-    def add_proc_local_variable(self, declaration: VarLocalDeclaration):
+    def add_proc_local_variable(self, declaration: VarDeclaration):
         pass
 
     def add_proc_param(self, declaration: VarParamDeclaration):
