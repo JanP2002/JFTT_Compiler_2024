@@ -59,11 +59,12 @@ def write_num(num: int):
     return asm_code
 
 
-def write_pid(pid):
+def write_pid(pid, line_number):
     memory_manager: MemoryManager = MemoryManager()
-    declaration = memory_manager.get_variable(pid)
+    declaration = memory_manager.get_variable(pid, line_number)
     if not declaration.is_initialized:
-        raise MemoryManagerException("Blad w linii %i: Zmienna %s nie jest zainicjalizowana" % (-1, declaration.pid))
+        raise MemoryManagerException("Blad w linii %i: Zmienna %s nie jest zainicjalizowana" %
+                                     (line_number, declaration.pid))
     address = declaration.get_memory_id()
     asm_code = set_register_const(REG.B, address)
     asm_code.append(makeInstr('LOAD', REG.B.value))
@@ -71,9 +72,9 @@ def write_pid(pid):
     return asm_code
 
 
-def read_pid(pid):
+def read_pid(pid, line_number):
     memory_manager: MemoryManager = MemoryManager()
-    declaration = memory_manager.get_variable(pid)
+    declaration = memory_manager.get_variable(pid, line_number)
     address = declaration.get_memory_id()
     asm_code = [makeInstr('READ')]
     asm_code.extend(set_register_const(REG.B, address))
@@ -82,9 +83,9 @@ def read_pid(pid):
     return asm_code
 
 
-def pid_assign_number(pid, number):
+def pid_assign_number(pid, number, line_num):
     memory_manager: MemoryManager = MemoryManager()
-    declaration = memory_manager.get_variable(pid)
+    declaration = memory_manager.get_variable(pid, line_num)
     address = declaration.get_memory_id()
     asm_code = set_register_const(REG.A, number)
     asm_code.extend(set_register_const(REG.B, address))
@@ -95,8 +96,8 @@ def pid_assign_number(pid, number):
 
 def pid_assign_pid(left_pid, right_pid, line_number):
     memory_manager: MemoryManager = MemoryManager()
-    l_declaration = memory_manager.get_variable(left_pid)
-    r_declaration = memory_manager.get_variable(right_pid)
+    l_declaration = memory_manager.get_variable(left_pid, line_number)
+    r_declaration = memory_manager.get_variable(right_pid, line_number)
     if not r_declaration.is_initialized:
         raise MemoryManagerException("Blad w linii %i: nizainicjowana zmienna %s" % (line_number, right_pid))
     l_address = l_declaration.get_memory_id()

@@ -1,9 +1,8 @@
 class VarDeclaration:
-    def __init__(self, pid, is_arr=False, is_local=False, line_number=-1):
+    def __init__(self, pid, is_arr=False, line_number=-1):
         self.pid = pid
         self.line_number = line_number
         self.is_array = is_arr
-        self.is_local = is_local
         self.memory_id = None
         self.length = 1
         self.is_initialized = False
@@ -21,9 +20,21 @@ class VarDeclaration:
         return self.memory_id
 
 
+class VarLocalDeclaration(VarDeclaration):
+    def __init__(self, pid, is_array=False, line_number=-1, parent_function=None):
+        super(VarDeclaration, self).__init__(pid, False, line_number)
+        self.parent_function = parent_function
+
+
+class VarParamDeclaration(VarDeclaration):
+    def __init__(self, pid, is_array=False, line_number=-1, parent_function=None):
+        super(VarDeclaration, self).__init__(pid, False, line_number)
+        self.parent_function = parent_function
+
+
 class ArrayDeclaration(VarDeclaration):
-    def __init__(self, pid, array_beg, array_end, is_local=False, line_number=-1):
-        super(VarDeclaration, self).__init__(pid, True, is_local, line_number)
+    def __init__(self, pid, array_beg, array_end, line_number=-1):
+        super(VarDeclaration, self).__init__(pid, True, line_number)
         if array_beg > array_end:
             raise ArrayRangeException("Nieprawidlowy zakres tablicy %s(%i, %i) w linii %i" % (pid, array_beg, array_end,
                                                                                               line_number))

@@ -1,4 +1,4 @@
-from NonTerminals.Declarations import VarDeclaration
+from NonTerminals.Declarations import VarDeclaration, VarLocalDeclaration, VarParamDeclaration
 
 
 class MemoryManager:
@@ -19,26 +19,32 @@ class MemoryManager:
         self.next_free += 1
         return self.next_free-1
 
-    def add_variable(self, declaration: VarDeclaration):
+    def add_variable(self, declaration: VarDeclaration, line_number):
         if declaration.pid in self.symbol_table:
-            raise MemoryManagerException(f"Redeklaracja zmiennej + {declaration.pid}")
+            raise MemoryManagerException(f"Blad w linii {line_number}: Redeklaracja zmiennej + {declaration.pid}")
         else:
             declaration.set_memory_id(self.allocate_variable())
             self.symbol_table.update({declaration.pid: declaration})
 
-    def get_address(self, pid):
+    def add_proc_local_variable(self, declaration: VarLocalDeclaration):
+        pass
+
+    def add_proc_param(self, declaration: VarParamDeclaration):
+        pass
+
+    def get_address(self, pid, line_number):
         try:
             declaration = self.symbol_table[pid]
             return declaration.get_memory_id()
         except KeyError:
-            raise MemoryManagerException(f"Proba uzycia niezadeklaroanej zmiennej: {pid}")
+            raise MemoryManagerException(f"Blad w linii {line_number}: Proba uzycia niezadeklaroanej zmiennej: {pid}")
 
-    def get_variable(self, pid):
+    def get_variable(self, pid, line_number):
         try:
             declaration: VarDeclaration = self.symbol_table[pid]
             return declaration
         except KeyError:
-            raise MemoryManagerException(f"Proba uzycia niezadeklaroanej zmiennej: {pid}")
+            raise MemoryManagerException(f"Blad w linii {line_number}: Proba uzycia niezadeklaroanej zmiennej: {pid}")
 
 
 class MemoryManagerException(Exception):

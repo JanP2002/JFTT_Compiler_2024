@@ -10,7 +10,6 @@ class Program:
         self.counter = 0
 
 
-
     def get_counter(self):
         return self.counter
 

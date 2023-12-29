@@ -9,7 +9,7 @@ class Main:
         self.declarations = declarations
         memory_manager = MemoryManager()
         for declaration in declarations:
-            memory_manager.add_variable(declaration)
+            memory_manager.add_variable(declaration, declaration.line_number)
         self.commands = commands
         self.instructions = []
         # self.asm_code = ""

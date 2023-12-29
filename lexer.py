@@ -7,16 +7,19 @@ reserved = {
     'IS': 'IS',
     'END': 'END',
     'READ': 'READ',
-    'WRITE': 'WRITE'
+    'WRITE': 'WRITE',
+    'PROCEDURE': 'PROCEDURE',
 }
 
-tokens = ['ASSIGN', 'SEMICOLON', 'COMMA', 'num', 'pid'] + list(reserved.values())
+tokens = ['ASSIGN', 'SEMICOLON', 'COMMA', 'num', 'pid', 'l_paren', 'r_paren'] + list(reserved.values())
 
 t_ignore = ' \t'
 t_SEMICOLON = r';'
 t_COMMA = r','
 t_ASSIGN = r':='
 t_pid = r'[_a-z]+'
+t_l_paren = r'\('
+t_r_paren = r'\)'
 
 
 def t_comment(t):

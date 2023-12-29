@@ -10,12 +10,51 @@ from MemoryManager import MemoryManager
 
 
 def p_program_all_main(p):
-    """program_all : main"""
-    p[0] = Program(p[1])
+    """program_all : procedures main"""
+    p[0] = Program(p[2])
 
 
-# def p_procedues_wih_decl(p):
-#     """procedures: empy"""
+def p_procedures_declarations_commands(p):
+    """procedures : PROCEDURE proc_head IS declarations IN commands END"""
+    pass
+
+
+def p_procedures_commands(p):
+    """procedures : PROCEDURE proc_head IS IN commands END"""
+    pass
+
+
+def p_procedures_empty(p):
+    """procedures : """
+    p[0] = []
+
+
+def p_proc_head(p):
+    """proc_head : pid l_paren args_decl r_paren"""
+    pass
+
+
+def p_proc_call(p):
+    """proc_call : pid l_paren args r_paren"""
+    pass
+
+
+def p_args_decl_append(p):
+    """args_decl : args_decl COMMA pid"""
+    pass
+
+
+def p_args_decl(p):
+    """args_decl : pid"""
+
+def p_args_append(p):
+    """args : args pid"""
+    pass
+
+
+def p_args(p):
+    """args : pid"""
+    pass
 
 def p_main_commands(p):
     """main : PROGRAM IS IN commands END"""
@@ -32,14 +71,14 @@ def p_declarations_append(p):
     """declarations : declarations COMMA pid"""
     if not p[1]:
         p[1] = []
-    decl1 = VarDeclaration(p[3], False, False, -1)
+    decl1 = VarDeclaration(p[3], False, p.lineno(2))
     p[1].append(decl1)
     p[0] = p[1]
 
 
 def p_declerations(p):
     """declarations : pid"""
-    p[0] = [VarDeclaration( p[1], False, False, -1)]
+    p[0] = [VarDeclaration( p[1], False, p.lineno(1))]
 
 def p_commands_append(p):
     """commands  : commands command"""
@@ -61,7 +100,7 @@ def p_command_write_num(p):
 
 def p_command_write_pid(p):
     """command  : WRITE pid SEMICOLON"""
-    p[0] = CommandWritePid(p[2])
+    p[0] = CommandWritePid(p[2], p.lineno(2))
 
 
 def p_command_read_pid(p):
