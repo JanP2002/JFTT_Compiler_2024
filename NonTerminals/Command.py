@@ -3,7 +3,7 @@ import Instructions
 
 class Command:
     def __init__(self, line_number=-1):
-        self.lineNumber = line_number
+        self.line_number = line_number
 
     def translate(self, program):
         raise Exception("generateCode() not defined for %s" % self.__class__)
@@ -52,7 +52,7 @@ class CommandPidAssignPid(Command):
         super(CommandPidAssignPid, self).__init__()
         self.left_pid = l_pid
         self.right_pid = r_pid
-        self.lineNumber = line_number
+        self.line_number = line_number
 
     def translate(self, p):
-        return Instructions.pid_assign_pid(self.left_pid, self.right_pid)
+        return Instructions.pid_assign_pid(self.left_pid, self.right_pid, self.line_number)

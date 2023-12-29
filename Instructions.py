@@ -93,10 +93,12 @@ def pid_assign_number(pid, number):
     return asm_code
 
 
-def pid_assign_pid(left_pid, right_pid):
+def pid_assign_pid(left_pid, right_pid, line_number):
     memory_manager: MemoryManager = MemoryManager()
     l_declaration = memory_manager.get_variable(left_pid)
     r_declaration = memory_manager.get_variable(right_pid)
+    if not r_declaration.is_initialized:
+        raise MemoryManagerException("Blad w linii %i: nizainicjowana zmienna %s" % (line_number, right_pid))
     l_address = l_declaration.get_memory_id()
     r_address = r_declaration.get_memory_id()
     asm_code = set_register_const(REG.E, r_address)#adres zmiennej right_pid w reg e
