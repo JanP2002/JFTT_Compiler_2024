@@ -1,27 +1,37 @@
+from NonTerminals.ProcHead import ProcHead
+from NonTerminals.Procedure import Procedure
 from lexer import lexer, tokens
 import ply.yacc as yacc
 from Program import Program
 from NonTerminals.Main import Main
 from NonTerminals.Command import CommandWriteNum, CommandWritePid, CommandReadPid, CommandPidAssignNumber, \
     CommandPidAssignPid
-from NonTerminals.Declarations import VarDeclaration
-from MemoryManager import MemoryManager
+from NonTerminals.Declarations import VarDeclaration, VarParamDeclaration
 
 
-
-def p_program_all_main(p):
+def p_program_all_procedures_main(p):
     """program_all : procedures main"""
-    p[0] = Program(p[2])
+    p[0] = Program(p[1], p[2])
 
 
 def p_procedures_declarations_commands(p):
     """procedures : PROCEDURE proc_head IS declarations IN commands END"""
-    pass
+    if not p[1]:
+        p[1] = []
+
+    curr_procedure = Procedure(p[2], p[4], p[6], p.lineno(1))
+    p[1].append(curr_procedure)
+    p[0] = p[1]
 
 
 def p_procedures_commands(p):
     """procedures : PROCEDURE proc_head IS IN commands END"""
-    pass
+    if not p[1]:
+        p[1] = []
+
+    curr_procedure = Procedure(p[2], [], p[5], p.lineno(1))
+    p[1].append(curr_procedure)
+    p[0] = p[1]
 
 
 def p_procedures_empty(p):
@@ -31,7 +41,7 @@ def p_procedures_empty(p):
 
 def p_proc_head(p):
     """proc_head : pid l_paren args_decl r_paren"""
-    pass
+    p[0] = ProcHead(p[1], p[3], p.lineno(1))
 
 
 def p_proc_call(p):
@@ -41,20 +51,32 @@ def p_proc_call(p):
 
 def p_args_decl_append(p):
     """args_decl : args_decl COMMA pid"""
-    pass
+    if not p[1]:
+        p[1] = []
+    decl1 = VarParamDeclaration(p[3], False, p.lineno(2))
+    p[1].append(decl1)
+    p[0] = p[1]
 
 
 def p_args_decl(p):
     """args_decl : pid"""
+    p[0] = [VarParamDeclaration(p[1], False, p.lineno(1))]
 
 def p_args_append(p):
-    """args : args pid"""
-    pass
+    """args : args COMMA pid"""
+    #TODO: do poprawy
+    # if not p[1]:
+    #     p[1] = []
+    # decl1 = VarParamDeclaration(p[3], False, p.lineno(2))
+    # p[1].append(decl1)
+    # p[0] = p[1]
 
 
 def p_args(p):
     """args : pid"""
-    pass
+    #TODO: do poprawy
+    # p[0] = [VarParamDeclaration(p[1], False, p.lineno(1))]
+
 
 def p_main_commands(p):
     """main : PROGRAM IS IN commands END"""
@@ -78,7 +100,8 @@ def p_declarations_append(p):
 
 def p_declerations(p):
     """declarations : pid"""
-    p[0] = [VarDeclaration( p[1], False, p.lineno(1))]
+    p[0] = [VarDeclaration(p[1], False, p.lineno(1))]
+
 
 def p_commands_append(p):
     """commands  : commands command"""
