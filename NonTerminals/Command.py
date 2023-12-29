@@ -45,3 +45,14 @@ class CommandPidAssignNumber(Command):
 
     def translate(self, p):
         return Instructions.pid_assign_number(self.pid, self.number)
+
+
+class CommandPidAssignPid(Command):
+    def __init__(self, l_pid, r_pid, line_number):
+        super(CommandPidAssignPid, self).__init__()
+        self.left_pid = l_pid
+        self.right_pid = r_pid
+        self.lineNumber = line_number
+
+    def translate(self, p):
+        return Instructions.pid_assign_pid(self.left_pid, self.right_pid)

@@ -10,6 +10,8 @@ PROGRAM IS
 IN
     READ c; #def
     b := 10;
+    a := c;
+    WRITE a;
     WRITE b;
     WRITE c;
 END

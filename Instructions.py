@@ -93,6 +93,20 @@ def pid_assign_number(pid, number):
     return asm_code
 
 
+def pid_assign_pid(left_pid, right_pid):
+    memory_manager: MemoryManager = MemoryManager()
+    l_declaration = memory_manager.get_variable(left_pid)
+    r_declaration = memory_manager.get_variable(right_pid)
+    l_address = l_declaration.get_memory_id()
+    r_address = r_declaration.get_memory_id()
+    asm_code = set_register_const(REG.E, r_address)#adres zmiennej right_pid w reg e
+    asm_code.append(makeInstr('LOAD', REG.E.value))
+    asm_code.extend(set_register_const(REG.B, l_address))
+    asm_code.append(makeInstr('STORE', REG.B.value))
+    l_declaration.is_initialized = True
+    return asm_code
+
+
 def set_register_const( reg, val):
     asm_code = [RST(reg)]
 

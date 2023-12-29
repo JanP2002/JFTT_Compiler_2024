@@ -13,6 +13,15 @@ SHL a
 RST b 
 INC b 
 STORE b 
+RST e 
+INC e 
+SHL e 
+LOAD e 
+RST b 
+STORE b 
+RST b 
+LOAD b 
+WRITE  
 RST b 
 INC b 
 LOAD b 

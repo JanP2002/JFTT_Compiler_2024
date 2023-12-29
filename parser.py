@@ -2,7 +2,8 @@ from lexer import lexer, tokens
 import ply.yacc as yacc
 from Program import Program
 from NonTerminals.Main import Main
-from NonTerminals.Command import CommandWriteNum, CommandWritePid, CommandReadPid, CommandPidAssignNumber
+from NonTerminals.Command import CommandWriteNum, CommandWritePid, CommandReadPid, CommandPidAssignNumber, \
+    CommandPidAssignPid
 from NonTerminals.Declarations import VarDeclaration
 from MemoryManager import MemoryManager
 
@@ -67,10 +68,16 @@ def p_command_read_pid(p):
     """command : READ pid SEMICOLON"""
     p[0] = CommandReadPid(p[2])
 
-def p_command_pid_ASSIGN_num(p):
+
+def p_command_pid_assign_num(p):
     """command  : pid ASSIGN num SEMICOLON"""
     # p[0] = CommandAssign(p[1], p[3], line=p.lineno(2))
     p[0] = CommandPidAssignNumber(p[1], p[3], -1)
+
+def p_command_pid_assign_pid(p):
+    """command  : pid ASSIGN pid SEMICOLON"""
+    # p[0] = CommandAssign(p[1], p[3], line=p.lineno(2))
+    p[0] = CommandPidAssignPid(p[1], p[3], -1)
 
 
 def p_error(p):
