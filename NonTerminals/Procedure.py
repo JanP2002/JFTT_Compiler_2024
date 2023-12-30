@@ -6,13 +6,17 @@ from NonTerminals.Command import Command
 
 class Procedure:
     def __init__(self, proc_head: ProcHead, local_declarations: List[VarDeclaration],
-                 commands: List[Command], line_number=-1):
+                 commands: List[Command]):
         self.pid = proc_head.pid
-        self.line_number = line_number
+        self.line_number = proc_head.line_number
         self.params_declarations = proc_head.args_declarations
+        for declaration in local_declarations:
+            declaration.is_local = True
+            declaration.parent_procedure = self.pid
         self.local_declarations = local_declarations
         self.commands = commands
         self.instructions = []
+        self.activation_record_start = -1
 
     def process_commands(self):
         for com in self.commands:
@@ -20,3 +24,6 @@ class Procedure:
 
     def translate(self):
         return self.instructions
+
+    def set_activation_record(self, start_id):
+        self.activation_record_start = start_id

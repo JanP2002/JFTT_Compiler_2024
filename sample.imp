@@ -14,6 +14,7 @@ IN
     WRITE a;
     WRITE b;
     WRITE c;
+    WRITE 1234567890;
 END
 
 

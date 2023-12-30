@@ -1,4 +1,5 @@
 from Instructions import HALT, JUMP
+from MemoryManager import MemoryManager
 
 
 class Program:
@@ -8,6 +9,18 @@ class Program:
         self.main = main
         self.instructions = []
         self.counter = 0
+        memory_manager: MemoryManager = MemoryManager()
+        for proc in procedures:
+            memory_manager.add_procedure(proc)
+            memory_manager.add_proc_params(proc.params_declarations)
+            memory_manager.add_proc_local_variables(proc.local_declarations)
+
+        # for declaration in main.declarations:
+        #     memory_manager.add_variable(declaration, declaration.line_number)
+        memory_manager.add_variables(main.declarations)
+        main.process_commands()
+        memory_manager.print_procedures_table()
+        memory_manager.print_symbol_table()
 
     def get_counter(self):
         return self.counter

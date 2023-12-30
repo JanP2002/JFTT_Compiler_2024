@@ -19,7 +19,7 @@ def p_procedures_declarations_commands(p):
     if not p[1]:
         p[1] = []
 
-    curr_procedure = Procedure(p[2], p[4], p[6], p.lineno(1))
+    curr_procedure = Procedure(p[2], p[4], p[6])
     p[1].append(curr_procedure)
     p[0] = p[1]
 
@@ -29,7 +29,7 @@ def p_procedures_commands(p):
     if not p[1]:
         p[1] = []
 
-    curr_procedure = Procedure(p[2], [], p[5], p.lineno(1))
+    curr_procedure = Procedure(p[2], [], p[5])
     p[1].append(curr_procedure)
     p[0] = p[1]
 

@@ -7,12 +7,12 @@ class Main:
 
     def __init__(self, declarations: List[VarDeclaration], commands):
         self.declarations = declarations
-        memory_manager = MemoryManager()
-        for declaration in declarations:
-            memory_manager.add_variable(declaration, declaration.line_number)
+        # memory_manager = MemoryManager()
+        # for declaration in declarations:
+        #     memory_manager.add_variable(declaration, declaration.line_number)
         self.commands = commands
         self.instructions = []
-        self.process_commands()
+        # self.process_commands()
 
 
 
