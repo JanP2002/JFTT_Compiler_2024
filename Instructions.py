@@ -59,7 +59,7 @@ def write_num(num: int):
     return asm_code
 
 
-def write_pid(pid, line_number):
+def write_pid(pid, line_number, parent_proc=None):
     memory_manager: MemoryManager = MemoryManager()
     declaration = memory_manager.get_variable(pid, line_number)
     if not declaration.is_initialized:
@@ -72,7 +72,7 @@ def write_pid(pid, line_number):
     return asm_code
 
 
-def read_pid(pid, line_number):
+def read_pid(pid, line_number, parent_proc=None):
     memory_manager: MemoryManager = MemoryManager()
     declaration = memory_manager.get_variable(pid, line_number)
     address = declaration.get_memory_id()
@@ -83,7 +83,7 @@ def read_pid(pid, line_number):
     return asm_code
 
 
-def pid_assign_number(pid, number, line_num):
+def pid_assign_number(pid, number, line_num, parent_proc=None):
     memory_manager: MemoryManager = MemoryManager()
     declaration = memory_manager.get_variable(pid, line_num)
     address = declaration.get_memory_id()
@@ -94,7 +94,7 @@ def pid_assign_number(pid, number, line_num):
     return asm_code
 
 
-def pid_assign_pid(left_pid, right_pid, line_number):
+def pid_assign_pid(left_pid, right_pid, line_number, parent_proc=None):
     memory_manager: MemoryManager = MemoryManager()
     l_declaration = memory_manager.get_variable(left_pid, line_number)
     r_declaration = memory_manager.get_variable(right_pid, line_number)

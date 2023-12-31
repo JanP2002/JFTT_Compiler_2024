@@ -17,10 +17,8 @@ class Program:
             memory_manager.add_proc_params(proc.params_declarations)
             memory_manager.add_proc_local_variables(proc.local_declarations)
 
-        # for declaration in main.declarations:
-        #     memory_manager.add_variable(declaration, declaration.line_number)
         memory_manager.add_variables(main.declarations)
-        main.process_commands()
+        # main.process_commands()
         memory_manager.print_procedures_table()
         memory_manager.print_symbol_table()
 
@@ -38,7 +36,10 @@ class Program:
 
     def translate(self):
         self.instructions.append(JUMP(":main"))
-        self.instructions.extend(self.main.translate())
+        # self.instructions.extend(self.main.translate())
+        for com in self.main.commands:
+            self.instructions.extend(com.translate(self.main))
+
         self.instructions.append(HALT(self))
         return self.instructions
 

@@ -29,9 +29,9 @@ class Main:
     #     self.instructions.append(instr_str)
 
 
-    def process_commands(self):
-        for com in self.commands:
-            self.instructions.extend(com.translate(self))
-
-    def translate(self):
-        return self.instructions
+    # def process_commands(self):
+    #     for com in self.commands:
+    #         self.instructions.extend(com.translate(self))
+    #
+    # def translate(self):
+    #     return self.instructions

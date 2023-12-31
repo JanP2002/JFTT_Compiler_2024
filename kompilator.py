@@ -23,6 +23,6 @@ try:
     print("Output file: '%s'" % outFile)
 except Exception as err:
     print(err)
-    print(err.with_traceback())
+    # print(err.with_traceback())
     exit(1)
     
