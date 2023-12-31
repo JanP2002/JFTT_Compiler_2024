@@ -31,7 +31,7 @@ class VarDeclaration:
 
 class VarParamDeclaration(VarDeclaration):
     def __init__(self, pid, is_array=False, line_number=-1, parent_proc=None):
-        super(VarDeclaration, self).__init__(pid, is_array, line_number, False, parent_proc, True)
+        super(VarParamDeclaration, self).__init__(pid, is_array, line_number, False, parent_proc, True)
 
 
 class ArrayDeclaration(VarDeclaration):

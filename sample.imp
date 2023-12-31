@@ -5,6 +5,11 @@
 # ? 1234567890987654321
 # ? 987654321
 # > 674106858
+PROCEDURE gcd(a,b,c) IS
+x, y, z
+IN
+    READ a;
+END
 PROGRAM IS
     a, b, c #comm
 IN

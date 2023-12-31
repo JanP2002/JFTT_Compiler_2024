@@ -1,6 +1,6 @@
 from NonTerminals.Declarations import VarDeclaration, VarParamDeclaration
 from typing import List
-from NonTerminals.Procedure import Procedure
+from NonTerminals.ProcHead import ProcHead
 
 
 class MemoryManager:
@@ -22,13 +22,13 @@ class MemoryManager:
         self.next_free += 1
         return self.next_free-1
 
-    def add_procedure(self, proc: Procedure):
-        if proc.pid in self.procedures_table:
+    def add_procedure(self, proc_head: ProcHead):
+        if proc_head.pid in self.procedures_table:
             raise MemoryManagerException(
-                f"Blad w linii {proc.line_number}: Redeklaracja procedury {proc.pid}")
+                f"Blad w linii {proc_head.line_number}: Redeklaracja procedury {proc_head.pid}")
         else:
-            proc.set_activation_record(self.allocate_variable())
-            self.procedures_table.update({proc.pid: proc})
+            activation_record = self.allocate_variable()
+            return activation_record
 
     def add_variables(self, declarations: List[VarDeclaration]):
         for declaration in declarations:

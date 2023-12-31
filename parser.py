@@ -15,21 +15,21 @@ def p_program_all_procedures_main(p):
 
 
 def p_procedures_declarations_commands(p):
-    """procedures : PROCEDURE proc_head IS declarations IN commands END"""
+    """procedures : procedures PROCEDURE proc_head IS declarations IN commands END"""
     if not p[1]:
         p[1] = []
 
-    curr_procedure = Procedure(p[2], p[4], p[6])
+    curr_procedure = Procedure(p[3], p[5], p[7])
     p[1].append(curr_procedure)
     p[0] = p[1]
 
 
 def p_procedures_commands(p):
-    """procedures : PROCEDURE proc_head IS IN commands END"""
+    """procedures : procedures PROCEDURE proc_head IS IN commands END"""
     if not p[1]:
         p[1] = []
 
-    curr_procedure = Procedure(p[2], [], p[5])
+    curr_procedure = Procedure(p[3], [], p[6])
     p[1].append(curr_procedure)
     p[0] = p[1]
 

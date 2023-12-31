@@ -11,7 +11,9 @@ class Program:
         self.counter = 0
         memory_manager: MemoryManager = MemoryManager()
         for proc in procedures:
-            memory_manager.add_procedure(proc)
+            activation_record_start = memory_manager.add_procedure(proc.head)
+            proc.activation_record_start = activation_record_start
+            memory_manager.procedures_table.update({proc.pid: proc})
             memory_manager.add_proc_params(proc.params_declarations)
             memory_manager.add_proc_local_variables(proc.local_declarations)
 

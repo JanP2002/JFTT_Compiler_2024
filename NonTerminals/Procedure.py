@@ -17,6 +17,7 @@ class Procedure:
         self.commands = commands
         self.instructions = []
         self.activation_record_start = -1
+        self.head = proc_head
 
     def process_commands(self):
         for com in self.commands:
