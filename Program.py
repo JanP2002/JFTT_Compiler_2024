@@ -35,10 +35,21 @@ class Program:
     #     return self.counter - 1
 
     def translate(self):
-        self.instructions.append(JUMP(":main"))
+        self.instructions.append(JUMP("main"))
         # self.instructions.extend(self.main.translate())
-        for com in self.main.commands:
-            self.instructions.extend(com.translate(self.main))
+        for proc in self.procedures:
+            for com in proc.commands:
+                com.set_parent_procedure(proc.pid)
+                self.instructions.extend(com.translate(proc))
+
+        first_comm = self.main.commands[0].translate(self.main)
+        first_comm[0] = "main: " + first_comm[0]
+        self.instructions.extend(first_comm)
+        for i in range(1, len(self.main.commands)):
+            self.instructions.extend(self.main.commands[i].translate(self.main))
+
+        # for com in self.main.commands:
+        #     self.instructions.extend(com.translate(self.main))
 
         self.instructions.append(HALT(self))
         return self.instructions

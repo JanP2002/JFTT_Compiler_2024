@@ -1,5 +1,12 @@
-JUMP :main 
-READ  
+JUMP main 
+RST a 
+INC a 
+SHL a 
+SHL a 
+SHL a 
+INC a 
+WRITE  
+main: READ  
 RST b 
 INC b 
 SHL b 
