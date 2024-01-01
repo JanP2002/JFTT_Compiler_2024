@@ -166,9 +166,11 @@ def proc_call(proc_pid, params: List[ProcCallParam], line_number, parent_proc=No
         passed_param_address = memory_manager.get_address(params[i].pid, params[i].line_number)
         asm_code.extend(set_register_const(REG.A, passed_param_address))
         proc_param_id = proc_pid + "##" + params_pattern_list[i].pid
-        proc_param_address = memory_manager.get_address(proc_param_id, line_number)
+        proc_param_declaration = memory_manager.get_variable(proc_param_id, line_number)
+        proc_param_address = proc_param_declaration.memory_id
         asm_code.extend(set_register_const(REG.B, proc_param_address))
         asm_code.append(makeInstr('STORE', REG.B.value))
+        proc_param_declaration.is_initialized = True
 
     asm_code.extend(set_register_const(REG.C, 4))
     return_address = procedure.activation_record_start
@@ -184,9 +186,10 @@ def proc_return(proc_pid, line_number):
     memory_manager: MemoryManager = MemoryManager()
     procedure = memory_manager.get_procedure(proc_pid, line_number)
     return_address = procedure.activation_record_start
-    return [makeInstr('JUMP', return_address)]
-
-
+    asm_code = set_register_const(REG.B, return_address)
+    asm_code.append(makeInstr('LOAD', REG.B.value))
+    asm_code.append(makeInstr('JUMPR', REG.A.value))
+    return asm_code
 
 
 def set_register_const( reg, val):

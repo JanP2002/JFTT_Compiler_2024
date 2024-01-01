@@ -5,13 +5,14 @@
 # ? 1234567890987654321
 # ? 987654321
 # > 674106858
-PROCEDURE gcd(a,b,c) IS
+PROCEDURE pa(a,b,c) IS
 x, y, z
 IN
-    READ a;
     READ x;
     WRITE x;
     WRITE a;
+    WRITE b;
+    WRITE c;
 END
 PROGRAM IS
     a, b, c #comm
@@ -19,6 +20,11 @@ IN
     READ c; #def
     b := 10;
     a := c;
+    #WRITE a;
+    #WRITE b;
+    #WRITE c;
+    #WRITE 1234567890;
+    pa(a, b, c);
     WRITE a;
     WRITE b;
     WRITE c;

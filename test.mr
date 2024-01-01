@@ -22,6 +22,9 @@ INC b
 LOAD b 
 LOAD a 
 WRITE  
+RST b 
+LOAD b 
+JUMPR a 
 main: READ  
 RST b 
 INC b 

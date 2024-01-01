@@ -1,4 +1,4 @@
-from Instructions import HALT, JUMP
+from Instructions import HALT, JUMP, proc_return
 from MemoryManager import MemoryManager
 
 
@@ -41,15 +41,13 @@ class Program:
             for com in proc.commands:
                 com.set_parent_procedure(proc.pid)
                 self.instructions.extend(com.translate(proc))
+            self.instructions.extend(proc_return(proc.pid, proc.line_number))
 
         first_comm = self.main.commands[0].translate(self.main)
         first_comm[0] = "main: " + first_comm[0]
         self.instructions.extend(first_comm)
         for i in range(1, len(self.main.commands)):
             self.instructions.extend(self.main.commands[i].translate(self.main))
-
-        # for com in self.main.commands:
-        #     self.instructions.extend(com.translate(self.main))
 
         self.instructions.append(HALT(self))
         return self.instructions

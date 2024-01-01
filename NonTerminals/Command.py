@@ -71,4 +71,4 @@ class ProcCall(Command):
         self.params = params
 
     def translate(self, p):
-        pass
+        return Instructions.proc_call(self.procedure_pid, self.params, self.line_number, self.parent_procedure)
