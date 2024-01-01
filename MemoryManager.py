@@ -85,6 +85,14 @@ class MemoryManager:
             raise MemoryManagerException(
                 f"Blad w linii {line_number}: Proba uzycia niezadeklaroanej zmiennej: {pid}")
 
+    def get_procedure(self, pid, line_number):
+        try:
+            procedure = self.procedures_table[pid]
+            return procedure
+        except KeyError:
+            raise MemoryManagerException(
+                f"Blad w linii {line_number}: Proba wywolania niezadeklaroanej procedury: {pid}")
+
     def print_symbol_table(self):
         print("Tablica symboli:")
         for key, value in self.symbol_table.items():

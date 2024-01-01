@@ -1,10 +1,13 @@
 import Instructions
+from typing import List
+from NonTerminals.ProcCallParam import ProcCallParam
 
 
 class Command:
     def __init__(self, line_number=-1):
         self.line_number = line_number
         self.parent_procedure = None
+        self.is_proc_call = False
 
     def set_parent_procedure(self, proc_pid):
         self.parent_procedure = proc_pid
@@ -58,3 +61,14 @@ class CommandPidAssignPid(Command):
 
     def translate(self, p):
         return Instructions.pid_assign_pid(self.left_pid, self.right_pid, self.line_number, self.parent_procedure)
+
+
+class ProcCall(Command):
+    def __init__(self, proc_pid, params: List[ProcCallParam], line_number):
+        super(ProcCall, self).__init__(line_number)
+        self.procedure_pid = proc_pid
+        self.is_proc_call = True
+        self.params = params
+
+    def translate(self, p):
+        pass

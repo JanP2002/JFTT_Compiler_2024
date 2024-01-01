@@ -1,10 +1,26 @@
 JUMP main 
-RST a 
-INC a 
-SHL a 
-SHL a 
-SHL a 
-INC a 
+RST b 
+INC b 
+LOAD b 
+PUT b 
+READ  
+STORE b 
+READ  
+RST b 
+INC b 
+SHL b 
+SHL b 
+STORE b 
+RST b 
+INC b 
+SHL b 
+SHL b 
+LOAD b 
+WRITE  
+RST b 
+INC b 
+LOAD b 
+LOAD a 
 WRITE  
 main: READ  
 RST b 

@@ -1,3 +1,4 @@
+from NonTerminals.ProcCallParam import ProcCallParam
 from NonTerminals.ProcHead import ProcHead
 from NonTerminals.Procedure import Procedure
 from lexer import lexer, tokens
@@ -5,7 +6,7 @@ import ply.yacc as yacc
 from Program import Program
 from NonTerminals.Main import Main
 from NonTerminals.Command import CommandWriteNum, CommandWritePid, CommandReadPid, CommandPidAssignNumber, \
-    CommandPidAssignPid
+    CommandPidAssignPid, ProcCall
 from NonTerminals.Declarations import VarDeclaration, VarParamDeclaration
 
 
@@ -46,7 +47,7 @@ def p_proc_head(p):
 
 def p_proc_call(p):
     """proc_call : pid l_paren args r_paren"""
-    pass
+    p[0] = ProcCall(p[1], p[3], p.lineno(1))
 
 
 def p_args_decl_append(p):
@@ -62,20 +63,19 @@ def p_args_decl(p):
     """args_decl : pid"""
     p[0] = [VarParamDeclaration(p[1], False, p.lineno(1))]
 
+
 def p_args_append(p):
     """args : args COMMA pid"""
-    #TODO: do poprawy
-    # if not p[1]:
-    #     p[1] = []
-    # decl1 = VarParamDeclaration(p[3], False, p.lineno(2))
-    # p[1].append(decl1)
-    # p[0] = p[1]
+    if not p[1]:
+        p[1] = []
+    param1 = ProcCallParam(p[3], p.lineno(2))
+    p[1].append(param1)
+    p[0] = p[1]
 
 
 def p_args(p):
     """args : pid"""
-    #TODO: do poprawy
-    # p[0] = [VarParamDeclaration(p[1], False, p.lineno(1))]
+    p[0] = [ProcCallParam(p[1], p.lineno(1))]
 
 
 def p_main_commands(p):
@@ -98,7 +98,7 @@ def p_declarations_append(p):
     p[0] = p[1]
 
 
-def p_declerations(p):
+def p_declarations(p):
     """declarations : pid"""
     p[0] = [VarDeclaration(p[1], False, p.lineno(1))]
 
@@ -141,6 +141,10 @@ def p_command_pid_assign_pid(p):
     """command  : pid ASSIGN pid SEMICOLON"""
     # p[0] = CommandAssign(p[1], p[3], line=p.lineno(2))
     p[0] = CommandPidAssignPid(p[1], p[3], p.lineno(2))
+
+def p_command_proc_call(p):
+    """command : proc_call SEMICOLON"""
+    pass
 
 
 def p_error(p):

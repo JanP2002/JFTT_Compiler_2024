@@ -8,7 +8,10 @@
 PROCEDURE gcd(a,b,c) IS
 x, y, z
 IN
-    WRITE 9;
+    READ a;
+    READ x;
+    WRITE x;
+    WRITE a;
 END
 PROGRAM IS
     a, b, c #comm

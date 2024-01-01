@@ -1,6 +1,8 @@
 from MemoryManager import MemoryManager
 from MemoryManager import MemoryManagerException
+from NonTerminals.ProcCallParam import ProcCallParam
 from Register import REG
+from typing import List
 
 
 def makeInstr(instr, X="", Y=""):
@@ -46,6 +48,9 @@ def SUB( X, Y):
 
 def RST( X):
     return makeInstr('RST', X)
+
+def STRK(X):
+    return makeInstr('STRK', X)
 
 
 def evalToRegInstr(value,  reg):
@@ -127,6 +132,7 @@ def pid_assign_number(pid, number, line_num, parent_proc=None):
     declaration.is_initialized = True
     return asm_code
 
+
 #TODO: Dostosowac do procedur
 def pid_assign_pid(left_pid, right_pid, line_number, parent_proc=None):
     memory_manager: MemoryManager = MemoryManager()
@@ -142,6 +148,45 @@ def pid_assign_pid(left_pid, right_pid, line_number, parent_proc=None):
     asm_code.append(makeInstr('STORE', REG.B.value))
     l_declaration.is_initialized = True
     return asm_code
+
+
+# TODO: Dostosowac do wywolan z wnetrzna innych procedur
+def proc_call(proc_pid, params: List[ProcCallParam], line_number, parent_proc=None):
+    memory_manager: MemoryManager = MemoryManager()
+    asm_code = []
+    procedure = memory_manager.get_procedure(proc_pid, line_number)
+    params_pattern_list = procedure.params_declarations
+    n_passed = len(params)
+    n_pattern = len(params_pattern_list)
+    if n_passed != n_pattern:
+        raise ProcCallException("Blad w linii %i: Podano nieprawidlowa liczbe parametrow procedury %s" %
+                                (line_number, proc_pid))
+
+    for i in range(n_pattern):
+        passed_param_address = memory_manager.get_address(params[i].pid, params[i].line_number)
+        asm_code.extend(set_register_const(REG.A, passed_param_address))
+        proc_param_id = proc_pid + "##" + params_pattern_list[i].pid
+        proc_param_address = memory_manager.get_address(proc_param_id, line_number)
+        asm_code.extend(set_register_const(REG.B, proc_param_address))
+        asm_code.append(makeInstr('STORE', REG.B.value))
+
+    asm_code.extend(set_register_const(REG.C, 4))
+    return_address = procedure.activation_record_start
+    asm_code.extend(set_register_const(REG.B, return_address))
+    asm_code.append(makeInstr('STRK', REG.A.value))
+    asm_code.append(makeInstr('ADD', REG.C.value))
+    asm_code.append(makeInstr('STORE', REG.B.value))
+    asm_code.append(makeInstr('JUMP', proc_pid))
+    return asm_code
+
+
+def proc_return(proc_pid, line_number):
+    memory_manager: MemoryManager = MemoryManager()
+    procedure = memory_manager.get_procedure(proc_pid, line_number)
+    return_address = procedure.activation_record_start
+    return [makeInstr('JUMP', return_address)]
+
+
 
 
 def set_register_const( reg, val):
@@ -161,3 +206,8 @@ def HALT(p):
     return makeInstr('HALT')
 # def LOAD_NUMBER_VALUE_TO_REGISTER( number, reg):
 #     set_register_const( reg, number)
+
+
+class ProcCallException(Exception):
+    def __init__(self, msg):
+        self.message = msg
