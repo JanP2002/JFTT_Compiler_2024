@@ -53,7 +53,7 @@ class MemoryManager:
             variable_id = parent_proc + "##" + declaration.pid
             if variable_id in self.symbol_table:
                 raise MemoryManagerException(
-                    f"Blad w linii {declaration.line_number}: Redeklaracja zmiennej + {declaration.pid}")
+                    f"Blad w linii {declaration.line_number}: Powtorne uzycie identyfikatora {declaration.pid}")
             else:
                 declaration.set_memory_id(self.allocate_variable())
                 self.symbol_table.update({variable_id: declaration})
@@ -64,7 +64,7 @@ class MemoryManager:
             param_id = parent_proc + "##" + declaration.pid
             if param_id in self.symbol_table:
                 raise MemoryManagerException(
-                    f"Blad w linii {declaration.line_number}: Redeklaracja zmiennej + {declaration.pid}")
+                    f"Blad w linii {declaration.line_number}: Powtorne uzycie identyfikatora {declaration.pid}")
             else:
                 declaration.set_memory_id(self.allocate_variable())
                 self.symbol_table.update({param_id: declaration})

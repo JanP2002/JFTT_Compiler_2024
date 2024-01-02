@@ -70,15 +70,22 @@ def write_pid(pid, line_number, parent_proc=None):
     if parent_proc is not None:
         variable_id = parent_proc + "##" + pid
         declaration = memory_manager.get_variable(variable_id, line_number)
-        if not declaration.is_initialized:
-            raise MemoryManagerException("Blad w linii %i: Zmienna %s nie jest zainicjalizowana" %
-                                         (line_number, declaration.pid))
-        address = declaration.get_memory_id()
-        asm_code.extend(set_register_const(REG.B, address))
-        asm_code.append(makeInstr('LOAD', REG.B.value))
         if declaration.is_param:
+            if (not declaration.is_initialized) and (not declaration.must_be_initialized):
+                declaration.set_uninitialized_error(line_number)
+            address = declaration.get_memory_id()
+            asm_code.extend(set_register_const(REG.B, address))
+            asm_code.append(makeInstr('LOAD', REG.B.value))
             asm_code.append(makeInstr('LOAD', REG.A.value))
-        asm_code.append(makeInstr('WRITE'))
+            asm_code.append(makeInstr('WRITE'))
+        else:
+            if not declaration.is_initialized:
+                raise MemoryManagerException("Blad w linii %i: Zmienna %s nie jest zainicjalizowana" %
+                                             (line_number, declaration.pid))
+            address = declaration.get_memory_id()
+            asm_code.extend(set_register_const(REG.B, address))
+            asm_code.append(makeInstr('LOAD', REG.B.value))
+            asm_code.append(makeInstr('WRITE'))
     else:
         declaration = memory_manager.get_variable(pid, line_number)
         if not declaration.is_initialized:
@@ -105,6 +112,7 @@ def read_pid(pid, line_number, parent_proc=None):
             asm_code.append(makeInstr('PUT', REG.B.value))#w B mamy teraz adres zmiennej pid
             asm_code.append(makeInstr('READ'))
             asm_code.append(makeInstr('STORE', REG.B.value))
+            # declaration.must_be_initialized = False
         else:
             asm_code.append(makeInstr('READ'))
             asm_code.extend(set_register_const(REG.B, address))
@@ -120,6 +128,7 @@ def read_pid(pid, line_number, parent_proc=None):
         declaration.is_initialized = True
 
     return asm_code
+
 
 #TODO: Dostosowac do procedur
 def pid_assign_number(pid, number, line_num, parent_proc=None):
@@ -163,14 +172,19 @@ def proc_call(proc_pid, params: List[ProcCallParam], line_number, parent_proc=No
                                 (line_number, proc_pid))
 
     for i in range(n_pattern):
-        passed_param_address = memory_manager.get_address(params[i].pid, params[i].line_number)
+        passed_param_variable = memory_manager.get_variable(params[i].pid, params[i].line_number)
+        # passed_param_address = memory_manager.get_address(params[i].pid, params[i].line_number)
+        passed_param_address = passed_param_variable.memory_id
         asm_code.extend(set_register_const(REG.A, passed_param_address))
         proc_param_id = proc_pid + "##" + params_pattern_list[i].pid
         proc_param_declaration = memory_manager.get_variable(proc_param_id, line_number)
+        if proc_param_declaration.must_be_initialized and (not passed_param_variable.is_initialized):
+            raise MemoryManagerException("Blad w linii %i: Proba uzycia niezainicjalizowanej zmiennej %s" %
+                                         (proc_param_declaration.uninitialized_usage_line, params_pattern_list[i].pid))
         proc_param_address = proc_param_declaration.memory_id
         asm_code.extend(set_register_const(REG.B, proc_param_address))
         asm_code.append(makeInstr('STORE', REG.B.value))
-        proc_param_declaration.is_initialized = True
+        # proc_param_declaration.is_initialized = True
 
     asm_code.extend(set_register_const(REG.C, 4))
     return_address = procedure.activation_record_start

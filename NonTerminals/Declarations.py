@@ -32,7 +32,13 @@ class VarDeclaration:
 class VarParamDeclaration(VarDeclaration):
     def __init__(self, pid, is_array=False, line_number=-1, parent_proc=None):
         super(VarParamDeclaration, self).__init__(pid, is_array, line_number, False, parent_proc, True)
-        self.is_initialized = True#???
+        self.is_initialized = False
+        self.must_be_initialized = False
+        self.uninitialized_usage_line = None
+
+    def set_uninitialized_error(self, line_number):
+        self.must_be_initialized = True
+        self.uninitialized_usage_line = line_number
 
 
 class ArrayDeclaration(VarDeclaration):
