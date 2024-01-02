@@ -1,3 +1,4 @@
+import Instructions
 from Instructions import HALT, JUMP, proc_return
 from MemoryManager import MemoryManager
 
@@ -35,9 +36,9 @@ class Program:
     #     return self.counter - 1
 
     def translate(self):
-        self.instructions.append(JUMP("main"))
-        # self.instructions.extend(self.main.translate())
+        self.instructions.append(JUMP("main:"))
         for proc in self.procedures:
+            proc.label = len(self.instructions)
             for com in proc.commands:
                 com.set_parent_procedure(proc.pid)
                 self.instructions.extend(com.translate(proc))
@@ -54,6 +55,22 @@ class Program:
 
     def get_asm_code(self):
         asm_list = self.translate()
+        for proc in self.procedures:
+            asm_list[proc.label] = proc.pid + ": " + asm_list[proc.label]
+        labels_dict = dict()
+        labels_usages = []
+        for i in range(len(asm_list)):
+            line_list = asm_list[i].split()
+            if line_list[0].endswith(":"):
+                labels_dict.update({line_list[0][:-1]: i})
+                asm_list[i] = asm_list[i].split(" ", 1)[1]#usuniecie etykiety
+            elif line_list[0] == 'JUMP' and line_list[1].endswith(":"):
+                labels_usages.append(i)
+        for usage in labels_usages:
+            line_list = asm_list[usage].split()
+            label_value = labels_dict[line_list[1][:-1]]
+            asm_list[usage] = Instructions.makeInstr('JUMP', label_value)
+
         asm_code = ""
         for w in asm_list:
             asm_code += w + "\n"

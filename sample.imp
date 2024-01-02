@@ -25,6 +25,8 @@ IN
     #WRITE c;
     #WRITE 1234567890;
     pa(a, b, c);
+    pa(c, b, a);
+    pa(a, a, a);
     WRITE a;
     WRITE b;
     WRITE c;

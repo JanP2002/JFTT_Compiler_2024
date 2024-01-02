@@ -192,7 +192,7 @@ def proc_call(proc_pid, params: List[ProcCallParam], line_number, parent_proc=No
     asm_code.append(makeInstr('STRK', REG.A.value))
     asm_code.append(makeInstr('ADD', REG.C.value))
     asm_code.append(makeInstr('STORE', REG.B.value))
-    asm_code.append(makeInstr('JUMP', proc_pid))
+    asm_code.append(makeInstr('JUMP', proc_pid + ":"))
     return asm_code
 
 
@@ -203,6 +203,8 @@ def proc_return(proc_pid, line_number):
     asm_code = set_register_const(REG.B, return_address)
     asm_code.append(makeInstr('LOAD', REG.B.value))
     asm_code.append(makeInstr('JUMPR', REG.A.value))
+    for decl in procedure.local_declarations:
+        decl.is_initialized = False
     return asm_code
 
 
