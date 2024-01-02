@@ -8,9 +8,13 @@ class Command:
         self.line_number = line_number
         self.parent_procedure = None
         self.is_proc_call = False
+        self.parent_procedure_label = None
 
     def set_parent_procedure(self, proc_pid):
         self.parent_procedure = proc_pid
+
+    def set_parent_procedure_label(self, label):
+        self.parent_procedure_label = label
 
     def translate(self, program):
         raise Exception("generateCode() not defined for %s" % self.__class__)
