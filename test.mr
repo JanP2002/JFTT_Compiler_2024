@@ -1,10 +1,4 @@
 JUMP main 
-RST b 
-INC b 
-LOAD b 
-PUT b 
-READ  
-STORE b 
 READ  
 RST b 
 INC b 
@@ -18,6 +12,19 @@ SHL b
 LOAD b 
 WRITE  
 RST b 
+INC b 
+LOAD b 
+LOAD a 
+WRITE  
+RST b 
+INC b 
+SHL b 
+LOAD b 
+LOAD a 
+WRITE  
+RST b 
+INC b 
+SHL b 
 INC b 
 LOAD b 
 LOAD a 
@@ -59,6 +66,44 @@ INC b
 SHL b 
 INC b 
 STORE b 
+RST a 
+INC a 
+SHL a 
+INC a 
+SHL a 
+INC a 
+RST b 
+INC b 
+STORE b 
+RST a 
+INC a 
+SHL a 
+SHL a 
+SHL a 
+RST b 
+INC b 
+SHL b 
+STORE b 
+RST a 
+INC a 
+SHL a 
+SHL a 
+SHL a 
+INC a 
+RST b 
+INC b 
+SHL b 
+INC b 
+STORE b 
+RST c 
+INC c 
+SHL c 
+SHL c 
+RST b 
+STRK a 
+ADD c 
+STORE b 
+JUMP pa 
 RST b 
 INC b 
 SHL b 

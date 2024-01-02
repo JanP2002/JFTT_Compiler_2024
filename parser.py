@@ -142,9 +142,10 @@ def p_command_pid_assign_pid(p):
     # p[0] = CommandAssign(p[1], p[3], line=p.lineno(2))
     p[0] = CommandPidAssignPid(p[1], p[3], p.lineno(2))
 
+
 def p_command_proc_call(p):
     """command : proc_call SEMICOLON"""
-    pass
+    p[0] = p[1]
 
 
 def p_error(p):
