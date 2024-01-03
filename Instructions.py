@@ -207,9 +207,11 @@ def proc_call(proc_pid, params: List[ProcCallParam], line_number, parent_proc=No
                 asm_code.append(makeInstr('LOAD', REG.B.value))
                 proc_param_id = proc_pid + "##" + params_pattern_list[i].pid
                 proc_param_declaration = memory_manager.get_variable(proc_param_id, line_number)
-                if proc_param_declaration.must_be_initialized and ((not passed_param_variable.is_initialized)
-                                                                   and (not passed_param_variable.must_be_initialized)):
-                    passed_param_variable.set_uninitialized_error(line_number)
+                if proc_param_declaration.must_be_initialized and (not passed_param_variable.is_initialized):
+                    uninitialized_usage = proc_param_declaration.uninitialized_usage_line
+                    if (not passed_param_variable.must_be_initialized) or (uninitialized_usage <
+                                                                           passed_param_variable.uninitialized_usage_line):
+                        passed_param_variable.set_uninitialized_error(uninitialized_usage)
 
                 proc_param_address = proc_param_declaration.memory_id
                 asm_code.extend(set_register_const(REG.B, proc_param_address))

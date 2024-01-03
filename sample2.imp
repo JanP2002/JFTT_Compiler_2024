@@ -10,7 +10,7 @@ x, y, z
 IN
     READ x;
     WRITE x;
-    #WRITE a;
+    WRITE a;
     WRITE b;
     WRITE c;
 END
@@ -18,11 +18,9 @@ END
 PROCEDURE pb(a,b,c) IS
 x, y, z
 IN
-    WRITE a;
     pa(a, b, c);
     pa(c, b, a);
     pa(a, a, a);
-    #WRITE z;
 END
 
 PROCEDURE pc(a,b,c) IS
@@ -38,8 +36,8 @@ PROGRAM IS
     a, b, c #comm
 IN
     READ c; #def
-    #b := 10;
-    #a := c;
+    b := 10;
+    a := c;
     #WRITE a;
     #WRITE b;
     #WRITE c;
