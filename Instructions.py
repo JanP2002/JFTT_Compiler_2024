@@ -218,13 +218,13 @@ def proc_call(proc_pid, params: List[ProcCallParam], line_number, parent_proc=No
             else:
                 raise ProcCallException("Nieprawidlowe zagniezdzone wywolanie procedury")
 
-            asm_code.extend(set_register_const(REG.C, 4))
-            return_address = called_procedure.activation_record_start
-            asm_code.extend(set_register_const(REG.B, return_address))
-            asm_code.append(makeInstr('STRK', REG.A.value))
-            asm_code.append(makeInstr('ADD', REG.C.value))
-            asm_code.append(makeInstr('STORE', REG.B.value))
-            asm_code.append(makeInstr('JUMP', proc_pid + ":"))
+        asm_code.extend(set_register_const(REG.C, 4))
+        return_address = called_procedure.activation_record_start
+        asm_code.extend(set_register_const(REG.B, return_address))
+        asm_code.append(makeInstr('STRK', REG.A.value))
+        asm_code.append(makeInstr('ADD', REG.C.value))
+        asm_code.append(makeInstr('STORE', REG.B.value))
+        asm_code.append(makeInstr('JUMP', proc_pid + ":"))
 
     else:
         procedure = memory_manager.get_procedure(proc_pid, line_number)
