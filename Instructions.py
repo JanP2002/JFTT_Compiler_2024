@@ -167,20 +167,75 @@ def pid_assign_number(pid, number, line_num, parent_proc=None):
     return asm_code
 
 
-# TODO: Dostosowac do procedur
 def pid_assign_pid(left_pid, right_pid, line_number, parent_proc=None):
     memory_manager: MemoryManager = MemoryManager()
-    l_declaration = memory_manager.get_variable(left_pid, line_number)
-    r_declaration = memory_manager.get_variable(right_pid, line_number)
-    if not r_declaration.is_initialized:
-        raise MemoryManagerException("Blad w linii %i: nizainicjowana zmienna %s" % (line_number, right_pid))
-    l_address = l_declaration.get_memory_id()
-    r_address = r_declaration.get_memory_id()
-    asm_code = set_register_const(REG.E, r_address)  # adres zmiennej right_pid w reg e
-    asm_code.append(makeInstr('LOAD', REG.E.value))
-    asm_code.extend(set_register_const(REG.B, l_address))
-    asm_code.append(makeInstr('STORE', REG.B.value))
-    l_declaration.is_initialized = True
+    asm_code = []
+    if parent_proc is not None:
+        l_variable_id = parent_proc + "##" + left_pid
+        r_variable_id = parent_proc + "##" + right_pid
+        l_declaration = memory_manager.get_variable(l_variable_id, line_number)
+        r_declaration = memory_manager.get_variable(r_variable_id, line_number)
+        if l_declaration.is_local and r_declaration.is_local:
+            if not r_declaration.is_initialized:
+                raise MemoryManagerException("Blad w linii %i: nizainicjowana zmienna %s" % (line_number, right_pid))
+            l_address = l_declaration.get_memory_id()
+            r_address = r_declaration.get_memory_id()
+            asm_code.extend(set_register_const(REG.E, r_address))  # adres zmiennej right_pid w reg e
+            asm_code.append(makeInstr('LOAD', REG.E.value))
+            asm_code.extend(set_register_const(REG.B, l_address))
+            asm_code.append(makeInstr('STORE', REG.B.value))
+            l_declaration.is_initialized = True
+        elif l_declaration.is_param and r_declaration.is_local:
+            if not r_declaration.is_initialized:
+                raise MemoryManagerException("Blad w linii %i: nizainicjowana zmienna %s" % (line_number, right_pid))
+            l_address = l_declaration.get_memory_id()
+            r_address = r_declaration.get_memory_id()#adres zmiennej right_pid
+            asm_code.extend(set_register_const(REG.B, l_address))
+            asm_code.append(makeInstr('LOAD', REG.B.value))   # w A mamy teraz adres zmiennej left_pid
+            asm_code.append(makeInstr('PUT', REG.B.value))    # w B mamy teraz adres zmiennej left_pid
+            asm_code.extend(set_register_const(REG.E, r_address))  # adres zmiennej right_pid w reg e
+            asm_code.append(makeInstr('LOAD', REG.E.value))
+            asm_code.append(makeInstr('STORE', REG.B.value))
+            l_declaration.is_initialized = True
+        elif l_declaration.is_local and r_declaration.is_param:
+            if (not r_declaration.is_initialized) and (not r_declaration.must_be_initialized):
+                r_declaration.set_uninitialized_error(line_number)
+            l_address = l_declaration.get_memory_id() # adres zmiennej left_pid
+            r_address = r_declaration.get_memory_id()
+            asm_code.extend(set_register_const(REG.E, r_address))
+            asm_code.append(makeInstr('LOAD', REG.E.value))  # w A mamy teraz adres zmiennej right_pid
+            # asm_code.append(makeInstr('PUT', REG.E.value))  # w E mamy teraz adres zmiennej right_pid
+            asm_code.append(makeInstr('LOAD', REG.A.value))  # w A mamy teraz wartosc zmiennej right_pid
+            asm_code.extend(set_register_const(REG.B, l_address))
+            asm_code.append(makeInstr('STORE', REG.B.value))
+            l_declaration.is_initialized = True
+        else:#l_declaration.is_param and r_declaration.is_param
+            if (not r_declaration.is_initialized) and (not r_declaration.must_be_initialized):
+                r_declaration.set_uninitialized_error(line_number)
+            l_address = l_declaration.get_memory_id()
+            r_address = r_declaration.get_memory_id()
+            asm_code.extend(set_register_const(REG.B, l_address))
+            asm_code.append(makeInstr('LOAD', REG.B.value))  # w A mamy teraz adres zmiennej left_pid
+            asm_code.append(makeInstr('PUT', REG.B.value))  # w B mamy teraz adres zmiennej left_pid
+
+            asm_code.extend(set_register_const(REG.E, r_address))
+            asm_code.append(makeInstr('LOAD', REG.E.value)) # w A mamy teraz adres zmiennej right_pid
+            # asm_code.append(makeInstr('PUT', REG.E.value))  # w E mamy teraz adres zmiennej right_pid
+            asm_code.append(makeInstr('LOAD', REG.A.value))  # w A mamy teraz wartosc zmiennej right_pid
+            asm_code.append(makeInstr('STORE', REG.B.value))
+            l_declaration.is_initialized = True
+    else:
+        l_declaration = memory_manager.get_variable(left_pid, line_number)
+        r_declaration = memory_manager.get_variable(right_pid, line_number)
+        if not r_declaration.is_initialized:
+            raise MemoryManagerException("Blad w linii %i: nizainicjowana zmienna %s" % (line_number, right_pid))
+        l_address = l_declaration.get_memory_id()
+        r_address = r_declaration.get_memory_id()
+        asm_code.extend(set_register_const(REG.E, r_address))  # adres zmiennej right_pid w reg e
+        asm_code.append(makeInstr('LOAD', REG.E.value))
+        asm_code.extend(set_register_const(REG.B, l_address))
+        asm_code.append(makeInstr('STORE', REG.B.value))
+        l_declaration.is_initialized = True
     return asm_code
 
 
