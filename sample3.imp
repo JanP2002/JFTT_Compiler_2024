@@ -8,8 +8,9 @@
 PROCEDURE pa(a,b,c) IS
 x, y, z
 IN
-    x := 111;
-    WRITE a;
+    READ x;
+    WRITE x;
+    #WRITE a;
     WRITE b;
     WRITE c;
 END
@@ -22,42 +23,27 @@ IN
     pa(c, b, a);
     pa(a, a, a);
     #WRITE z;
-    a := 701;
-    b := 702;
-    c := 703;
 END
 
 PROCEDURE pc(a,b,c) IS
 x, y, z
 IN
-    x := 111;
-    y := 112;
-    z := 113;
+    READ x;
+    READ y;
+    READ z;
     pb(a, b, c);
     pa(x, y, c);
-    #a := 111;
-    #b := 112;
-    #c := 113;
 END
-
-PROCEDURE test(a,b,c) IS
-x, y, z
-IN
-    a := 301;
-    b := 302;
-    c := 303;
-END
-
 PROGRAM IS
     a, b, c #comm
 IN
-    c:=77; #def
-    b := 10;
-    a := c;
-    WRITE a;
-    WRITE b;
-    WRITE c;
-    #test(a, b, c);
+    READ c; #def
+    #b := 10;
+    #a := c;
+    #WRITE a;
+    #WRITE b;
+    #WRITE c;
+    #WRITE 1234567890;
     pc(a, b, c);
     pa(b, c, c);
     WRITE a;

@@ -137,15 +137,33 @@ def read_pid(pid, line_number, parent_proc=None):
     return asm_code
 
 
-# TODO: Dostosowac do procedur
 def pid_assign_number(pid, number, line_num, parent_proc=None):
     memory_manager: MemoryManager = MemoryManager()
-    declaration = memory_manager.get_variable(pid, line_num)
-    address = declaration.get_memory_id()
-    asm_code = set_register_const(REG.A, number)
-    asm_code.extend(set_register_const(REG.B, address))
-    asm_code.append(makeInstr('STORE', REG.B.value))
-    declaration.is_initialized = True
+    asm_code = []
+    if parent_proc is not None:
+        variable_id = parent_proc + "##" + pid
+        declaration = memory_manager.get_variable(variable_id, line_num)
+        if declaration.is_param:
+            address = declaration.get_memory_id()
+            asm_code.extend(set_register_const(REG.B, address))
+            asm_code.append(makeInstr('LOAD', REG.B.value))  # w A mamy teraz adres zmiennej pid
+            asm_code.append(makeInstr('PUT', REG.B.value))  # w B mamy teraz adres zmiennej pid
+            asm_code.extend(set_register_const(REG.A, number))
+            asm_code.append(makeInstr('STORE', REG.B.value))
+            declaration.is_initialized = True
+        else:
+            address = declaration.get_memory_id()
+            asm_code.extend(set_register_const(REG.A, number))
+            asm_code.extend(set_register_const(REG.B, address))
+            asm_code.append(makeInstr('STORE', REG.B.value))
+            declaration.is_initialized = True
+    else:
+        declaration = memory_manager.get_variable(pid, line_num)
+        address = declaration.get_memory_id()
+        asm_code.extend(set_register_const(REG.A, number))
+        asm_code.extend(set_register_const(REG.B, address))
+        asm_code.append(makeInstr('STORE', REG.B.value))
+        declaration.is_initialized = True
     return asm_code
 
 
@@ -166,7 +184,7 @@ def pid_assign_pid(left_pid, right_pid, line_number, parent_proc=None):
     return asm_code
 
 
-# TODO: Dostosowac do wywolan z wnetrzna innych procedur
+# TODO: poprawic przekazywanie inf. o niezainicjowanej zmiennej
 def proc_call(proc_pid, params: List[ProcCallParam], line_number, parent_proc=None):
     memory_manager: MemoryManager = MemoryManager()
     asm_code = []
