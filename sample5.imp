@@ -1,0 +1,55 @@
+# błąd: niezadeklarowana zmienna e w linii 5
+# a > 1
+# a ^ b mod c
+# ? 1234567890
+# ? 1234567890987654321
+# ? 987654321
+# > 674106858
+PROCEDURE pa(a,b,c) IS
+x, y, z
+IN
+    READ x;
+    WRITE x;
+    #WRITE a;
+    WRITE b;
+    WRITE c;
+END
+
+PROCEDURE pb(a,b,c) IS
+x, y, z
+IN
+    WRITE b;
+    pa(a, b, c);
+    pa(c, b, a);
+    pa(a, a, a);
+    #WRITE z;
+END
+
+PROCEDURE pc(a,b,c) IS
+x, y, z
+IN
+    READ x;
+    READ y;
+    READ z;
+    pb(a, b, c);
+    pa(x, y, c);
+END
+PROGRAM IS
+    a, b, c #comm
+IN
+    READ c; #def
+    #b := 10;
+    #a := c;
+    #WRITE a;
+    #WRITE b;
+    #WRITE c;
+    #WRITE 1234567890;
+    pc(a, b, c);
+    pa(b, c, c);
+    WRITE a;
+    WRITE b;
+    WRITE c;
+    WRITE 1234567890;
+END
+
+

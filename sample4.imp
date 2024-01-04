@@ -49,7 +49,6 @@ IN
     a := z;
     b := a;
     c := c;
-    #test(x, y, z);
 END
 
 

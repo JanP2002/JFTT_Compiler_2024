@@ -248,9 +248,12 @@ def proc_call(proc_pid, params: List[ProcCallParam], line_number, parent_proc=No
         called_proc_label = called_procedure.label
         parent_procedure = memory_manager.get_procedure(parent_proc, line_number)
         parent_proc_label = parent_procedure.label
-        if called_proc_label >= parent_proc_label:
+        if called_proc_label > parent_proc_label:
             raise MemoryManagerException("Blad w linii %i: Procedura %s nie jest zdefiniowana" %
                                          (line_number, proc_pid))
+        elif called_proc_label == parent_proc_label:
+            raise MemoryManagerException("Blad w linii %i: Proba rekurencyjnego wywolania procedury %s" %
+                                   (line_number, proc_pid))
         params_pattern_list = called_procedure.params_declarations
         n_passed = len(params)
         n_pattern = len(params_pattern_list)
@@ -280,11 +283,9 @@ def proc_call(proc_pid, params: List[ProcCallParam], line_number, parent_proc=No
                 asm_code.append(makeInstr('LOAD', REG.B.value))
                 proc_param_id = proc_pid + "##" + params_pattern_list[i].pid
                 proc_param_declaration = memory_manager.get_variable(proc_param_id, line_number)
-                if proc_param_declaration.must_be_initialized and (not passed_param_variable.is_initialized):
-                    uninitialized_usage = proc_param_declaration.uninitialized_usage_line
-                    if (not passed_param_variable.must_be_initialized) or (uninitialized_usage <
-                                                                           passed_param_variable.uninitialized_usage_line):
-                        passed_param_variable.set_uninitialized_error(uninitialized_usage)
+                if proc_param_declaration.must_be_initialized and ((not passed_param_variable.is_initialized)
+                                                                   and (not passed_param_variable.must_be_initialized)):
+                    passed_param_variable.set_uninitialized_error(proc_param_declaration.uninitialized_usage_line)
 
                 proc_param_address = proc_param_declaration.memory_id
                 asm_code.extend(set_register_const(REG.B, proc_param_address))
@@ -319,7 +320,7 @@ def proc_call(proc_pid, params: List[ProcCallParam], line_number, parent_proc=No
             if proc_param_declaration.must_be_initialized and (not passed_param_variable.is_initialized):
                 raise MemoryManagerException("Blad w linii %i: Proba uzycia niezainicjalizowanej zmiennej %s" %
                                              (proc_param_declaration.uninitialized_usage_line,
-                                              params_pattern_list[i].pid))
+                                              passed_param_variable.pid))
             proc_param_address = proc_param_declaration.memory_id
             asm_code.extend(set_register_const(REG.B, proc_param_address))
             asm_code.append(makeInstr('STORE', REG.B.value))
