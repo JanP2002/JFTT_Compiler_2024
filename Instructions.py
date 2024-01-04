@@ -20,8 +20,8 @@ def STORE(reg):
     return makeInstr('STORE', reg)
 
 
-def LOAD(reg):
-    return makeInstr('LOAD', reg)
+def LOAD(reg: REG):
+    return makeInstr('LOAD', reg.value)
 
 
 def INC(reg):
@@ -48,8 +48,8 @@ def SHR(X):
     return makeInstr('SHR', X)
 
 
-def SUB(X, Y):
-    return makeInstr('SUB', X, Y)
+def SUB(X):
+    return makeInstr('SUB', X)
 
 
 def RST(X):
@@ -62,6 +62,20 @@ def STRK(X):
 
 def evalToRegInstr(value, reg):
     return set_register_const(reg, value)
+
+def load_pid(reg: REG, pid, line_number, parent_proc=None):
+    asm_code = []
+    memory_manager: MemoryManager = MemoryManager()
+    if parent_proc is not None:
+        pass
+    else:
+        declaration = memory_manager.get_variable(pid, line_number)
+        address = declaration.get_memory_id()
+        asm_code.extend(set_register_const(REG.B, address))
+        asm_code.append(LOAD(REG.B.value))
+        asm_code.append(makeInstr('PUT', reg.value))
+
+    return asm_code
 
 
 def write_num(num: int):

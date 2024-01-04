@@ -7,13 +7,36 @@
 # > 674106858
 
 
+PROCEDURE pa(a,b,c) IS
+x, y, z
+IN
+    a := 4;
+    c := b;
+END
+
+
+PROCEDURE pb(a,b,c) IS
+x, y, z
+IN
+    x := b;
+    pa(a, x, c);
+END
+
+
+
 PROGRAM IS
     a, b, c #comm
 IN
    a := 1+2;
    b := 2-3;
+   c := 7;
    WRITE a;
    WRITE b;
+   WRITE c;
+   pb(a, b, c);
+   WRITE a;
+   WRITE b;
+   WRITE c;
 END
 
 
