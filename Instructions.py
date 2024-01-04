@@ -238,6 +238,50 @@ def pid_assign_pid(left_pid, right_pid, line_number, parent_proc=None):
         l_declaration.is_initialized = True
     return asm_code
 
+#TODO: Dostosowac do wywolania z wnetrza procedury
+def pid_assign_num_op_num(pid, num1, num2, operation, line_number, parent_procedure):
+    memory_manager: MemoryManager = MemoryManager()
+    asm_code = []
+    if operation == '+':
+        result = num1 + num2
+        asm_code.extend(set_register_const(REG.A, result))
+    elif operation == '-':
+        result = 0
+        if num2 < num1:
+            result = num1 - num2
+        asm_code.extend(set_register_const(REG.A, result))
+    elif operation == "*":
+        result = num1*num2
+        asm_code.extend(set_register_const(REG.A, result))
+    elif operation == '/':
+        result = 0
+        if num2 != 0:
+            result = num1//num2
+        asm_code.extend(set_register_const(REG.A, result))
+    elif operation == '%':
+        result = 0
+        if num2 != 0:
+            result = num1 % num2
+        asm_code.extend(set_register_const(REG.A, result))
+    else:
+        raise Exception("Nieprawidlowa operacja")
+
+    # asm_code.extend(set_register_const(REG.A, num1))
+    # asm_code.extend(set_register_const(REG.B, num2))
+    # if operation == '+':
+    #     asm_code.extend(generate_adding(num1, num2))
+    # elif operation == '-':
+    #     asm_code.extend(generate_subtraction(num1, num2))
+    # else:
+    #     raise Exception("Nieprawidlowa operacja")
+
+    declaration = memory_manager.get_variable(pid, line_number)
+    address = declaration.get_memory_id()
+    asm_code.extend(set_register_const(REG.B, address))
+    asm_code.append(makeInstr('STORE', REG.B.value))
+    declaration.is_initialized = True
+    return asm_code
+
 
 # TODO: poprawic przekazywanie inf. o niezainicjowanej zmiennej
 def proc_call(proc_pid, params: List[ProcCallParam], line_number, parent_proc=None):
@@ -365,6 +409,16 @@ def set_register_const(reg, val):
     return asm_code
 
 
+def generate_adding(num1, num2):
+    asm_code = [makeInstr('ADD', REG.B.value)]
+    return asm_code
+
+
+def generate_subtraction(num1, num2):
+    asm_code = [makeInstr('SUB', REG.B.value)]
+    return asm_code
+
+
 def HALT(p):
     return makeInstr('HALT')
 
@@ -376,3 +430,5 @@ def HALT(p):
 class ProcCallException(Exception):
     def __init__(self, msg):
         self.message = msg
+
+

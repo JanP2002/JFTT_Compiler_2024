@@ -6,7 +6,7 @@ import ply.yacc as yacc
 from Program import Program
 from NonTerminals.Main import Main
 from NonTerminals.Command import CommandWriteNum, CommandWritePid, CommandReadPid, CommandPidAssignNumber, \
-    CommandPidAssignPid, ProcCall
+    CommandPidAssignPid, ProcCall, CommandPidAssignNumOpNum
 from NonTerminals.Declarations import VarDeclaration, VarParamDeclaration
 
 
@@ -141,6 +141,11 @@ def p_command_pid_assign_pid(p):
     """command  : pid ASSIGN pid SEMICOLON"""
     # p[0] = CommandAssign(p[1], p[3], line=p.lineno(2))
     p[0] = CommandPidAssignPid(p[1], p[3], p.lineno(2))
+
+
+def p_command_pid_assign_num_op_num(p):
+    """command : pid ASSIGN num op num SEMICOLON"""
+    p[0] = CommandPidAssignNumOpNum(p[1], p[3], p[5], p[4], p.lineno(2))
 
 
 def p_command_proc_call(p):

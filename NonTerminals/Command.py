@@ -67,6 +67,19 @@ class CommandPidAssignPid(Command):
         return Instructions.pid_assign_pid(self.left_pid, self.right_pid, self.line_number, self.parent_procedure)
 
 
+class CommandPidAssignNumOpNum(Command):
+    def __init__(self, pid, num1, num2, operation, line_number):
+        super(CommandPidAssignNumOpNum, self).__init__(line_number)
+        self.pid = pid
+        self.num1 = num1
+        self.num2 = num2
+        self.operation = operation
+
+    def translate(self, p):
+        return Instructions.pid_assign_num_op_num(self.pid, self.num1, self.num2,
+                                                  self.operation, self.line_number, self.parent_procedure)
+
+
 class ProcCall(Command):
     def __init__(self, proc_pid, params: List[ProcCallParam], line_number):
         super(ProcCall, self).__init__(line_number)
