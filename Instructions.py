@@ -79,7 +79,7 @@ def write_pid(pid, line_number, parent_proc=None):
         declaration = memory_manager.get_variable(variable_id, line_number)
         if declaration.is_param:
             if (not declaration.is_initialized) and (not declaration.must_be_initialized):
-                declaration.set_uninitialized_error(line_number)
+                declaration.set_uninitialized_error(pid, line_number)
             address = declaration.get_memory_id()
             asm_code.extend(set_register_const(REG.B, address))
             asm_code.append(makeInstr('LOAD', REG.B.value))
@@ -199,7 +199,7 @@ def pid_assign_pid(left_pid, right_pid, line_number, parent_proc=None):
             l_declaration.is_initialized = True
         elif l_declaration.is_local and r_declaration.is_param:
             if (not r_declaration.is_initialized) and (not r_declaration.must_be_initialized):
-                r_declaration.set_uninitialized_error(line_number)
+                r_declaration.set_uninitialized_error(right_pid, line_number)
             l_address = l_declaration.get_memory_id() # adres zmiennej left_pid
             r_address = r_declaration.get_memory_id()
             asm_code.extend(set_register_const(REG.E, r_address))
@@ -211,7 +211,7 @@ def pid_assign_pid(left_pid, right_pid, line_number, parent_proc=None):
             l_declaration.is_initialized = True
         else:#l_declaration.is_param and r_declaration.is_param
             if (not r_declaration.is_initialized) and (not r_declaration.must_be_initialized):
-                r_declaration.set_uninitialized_error(line_number)
+                r_declaration.set_uninitialized_error(right_pid, line_number)
             l_address = l_declaration.get_memory_id()
             r_address = r_declaration.get_memory_id()
             asm_code.extend(set_register_const(REG.B, l_address))
@@ -272,7 +272,7 @@ def proc_call(proc_pid, params: List[ProcCallParam], line_number, parent_proc=No
                 if proc_param_declaration.must_be_initialized and (not passed_param_variable.is_initialized):
                     raise MemoryManagerException("Blad w linii %i: Proba uzycia niezainicjalizowanej zmiennej %s" %
                                                  (proc_param_declaration.uninitialized_usage_line,
-                                                  params_pattern_list[i].pid))
+                                                  proc_param_declaration.context_pid))
                 proc_param_address = proc_param_declaration.memory_id
                 asm_code.extend(set_register_const(REG.B, proc_param_address))
                 asm_code.append(makeInstr('STORE', REG.B.value))
@@ -285,7 +285,11 @@ def proc_call(proc_pid, params: List[ProcCallParam], line_number, parent_proc=No
                 proc_param_declaration = memory_manager.get_variable(proc_param_id, line_number)
                 if proc_param_declaration.must_be_initialized and ((not passed_param_variable.is_initialized)
                                                                    and (not passed_param_variable.must_be_initialized)):
-                    passed_param_variable.set_uninitialized_error(proc_param_declaration.uninitialized_usage_line)
+                    context_pid = proc_param_declaration.context_pid
+                    if context_pid is None:
+                        context_pid = proc_param_declaration.pid
+                    passed_param_variable.set_uninitialized_error(context_pid,
+                                                                  proc_param_declaration.uninitialized_usage_line)
 
                 proc_param_address = proc_param_declaration.memory_id
                 asm_code.extend(set_register_const(REG.B, proc_param_address))
@@ -320,7 +324,7 @@ def proc_call(proc_pid, params: List[ProcCallParam], line_number, parent_proc=No
             if proc_param_declaration.must_be_initialized and (not passed_param_variable.is_initialized):
                 raise MemoryManagerException("Blad w linii %i: Proba uzycia niezainicjalizowanej zmiennej %s" %
                                              (proc_param_declaration.uninitialized_usage_line,
-                                              passed_param_variable.pid))
+                                              proc_param_declaration.context_pid))
             proc_param_address = proc_param_declaration.memory_id
             asm_code.extend(set_register_const(REG.B, proc_param_address))
             asm_code.append(makeInstr('STORE', REG.B.value))

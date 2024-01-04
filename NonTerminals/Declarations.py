@@ -35,10 +35,12 @@ class VarParamDeclaration(VarDeclaration):
         self.is_initialized = False
         self.must_be_initialized = False
         self.uninitialized_usage_line = None
+        self.context_pid = None
 
-    def set_uninitialized_error(self, line_number):
+    def set_uninitialized_error(self, context_pid, line_number):
         self.must_be_initialized = True
         self.uninitialized_usage_line = line_number
+        self.context_pid = context_pid
 
 
 class ArrayDeclaration(VarDeclaration):
