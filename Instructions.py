@@ -7,74 +7,107 @@ from typing import List
 
 def makeInstr(instr, X="", Y=""):
     instr_str = "%s %s %s" % (instr, X, Y)
-    # self.inc_counter()
-    # self.instructions.append(instr_str)
     return instr_str
 
 
-def GET(reg):
-    return makeInstr('GET', reg)
+def GET(reg: REG):
+    return makeInstr('GET', reg.value)
 
 
-def STORE(reg):
-    return makeInstr('STORE', reg)
+def STORE(reg: REG):
+    return makeInstr('STORE', reg.value)
 
 
 def LOAD(reg: REG):
     return makeInstr('LOAD', reg.value)
 
+def PUT(reg: REG):
+    return makeInstr('PUT', reg.value)
 
-def INC(reg):
-    return makeInstr('INC', reg)
+
+def GET(reg: REG):
+    return makeInstr('GET', reg.value)
+
+
+def INC(reg: REG):
+    return makeInstr('INC', reg.value)
 
 
 def JUMP(j):
     return makeInstr('JUMP', j)
 
+def JPOS(j):
+    return makeInstr('JPOS', j)
 
-def DEC(X):
-    return makeInstr('DEC', X)
-
-
-def ADD(X, Y):
-    return makeInstr('ADD', X, Y)
+def JZERO(j):
+    return makeInstr('JZERO', j)
 
 
-def SHL(X):
-    return makeInstr('SHL', X)
+def DEC(reg: REG):
+    return makeInstr('DEC', reg.value)
 
 
-def SHR(X):
-    return makeInstr('SHR', X)
+def ADD(reg: REG):
+    return makeInstr('ADD', reg.value)
 
 
-def SUB(X):
-    return makeInstr('SUB', X)
+def SHL(reg: REG):
+    return makeInstr('SHL', reg.value)
 
 
-def RST(X):
-    return makeInstr('RST', X)
+def SHR(reg: REG):
+    return makeInstr('SHR', reg.value)
 
 
-def STRK(X):
-    return makeInstr('STRK', X)
+def SUB(reg: REG):
+    return makeInstr('SUB', reg.value)
+
+
+def RST(reg: REG):
+    return makeInstr('RST', reg.value)
+
+
+def STRK(reg: REG):
+    return makeInstr('STRK', reg.value)
+
+
+def JUMPR(reg: REG):
+    return makeInstr('JUMPR', reg.value)
+
+def READ(p):
+    return makeInstr('READ')
+
+
+def WRITE(p):
+    return makeInstr('WRITE')
+
+
+def HALT(p):
+    return makeInstr('HALT')
 
 
 def evalToRegInstr(value, reg):
     return set_register_const(reg, value)
 
+
 def load_pid(reg: REG, pid, line_number, parent_proc=None):
     asm_code = []
     memory_manager: MemoryManager = MemoryManager()
     if parent_proc is not None:
-        pass
+        variable_id = parent_proc + "##" + pid
+        declaration = memory_manager.get_variable(pid, line_number)
+        address = declaration.get_memory_id()
+        if declaration.is_param:
+            asm_code.extend(set_register_const(REG.B, address))
+            asm_code.append(LOAD(REG.B))#w A mamy teraz adres zmiennej pid
+            asm_code.append(LOAD(REG.A))#w A may teraz wartosc zmiennej pid
     else:
         declaration = memory_manager.get_variable(pid, line_number)
         address = declaration.get_memory_id()
         asm_code.extend(set_register_const(REG.B, address))
-        asm_code.append(LOAD(REG.B.value))
-        asm_code.append(makeInstr('PUT', reg.value))
-
+        asm_code.append(LOAD(REG.B))
+        if reg != REG.A:
+            asm_code.append(PUT(reg))
     return asm_code
 
 
@@ -205,17 +238,14 @@ def set_register_const(reg, val):
 
 
 def generate_adding(num1, num2):
-    asm_code = [makeInstr('ADD', REG.B.value)]
+    asm_code = [ADD(REG.B)]
     return asm_code
 
 
 def generate_subtraction(num1, num2):
-    asm_code = [makeInstr('SUB', REG.B.value)]
+    asm_code = [SUB(REG.B)]
     return asm_code
 
-
-def HALT(p):
-    return makeInstr('HALT')
 
 
 # def LOAD_NUMBER_VALUE_TO_REGISTER( number, reg):

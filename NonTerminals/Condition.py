@@ -19,32 +19,42 @@ class COP(Enum):
 
 def generate_compare(cop: COP):
     asm_code = []
+    negation_mode = False
     if cop == COP.LT:
         asm_code.append(Instructions.makeInstr('GET', REG.D))
         asm_code.append(Instructions.makeInstr('SUB', REG.C))
     elif cop == COP.GT:
         asm_code.append(Instructions.makeInstr('GET', REG.C))
         asm_code.append(Instructions.makeInstr('SUB', REG.D))
-    elif cop == COP.LE: # C <= D:
-        asm_code.append(Instructions.makeInstr('INC', REG.C))#?
+    elif cop == COP.LE: # not C > D:
         asm_code.append(Instructions.makeInstr('GET', REG.C))
         asm_code.append(Instructions.makeInstr('SUB', REG.D))
-        #TODO:
+        negation_mode = True
+    elif cop == COP.GE: # not C < D
+        asm_code.append(Instructions.makeInstr('GET', REG.D))
+        asm_code.append(Instructions.makeInstr('SUB', REG.C))
+        negation_mode = True
+    elif cop == COP.EQ:
+        asm_code.append(Instructions.GET(REG.C))
+        asm_code.append(Instructions.SUB(REG.D))
+        asm_code.append(Instructions.ADD(REG.D))
+        asm_code.append(Instructions.SUB(REG.C))
+        negation_mode = True
+    elif cop == COP.NE:
+        asm_code.append(Instructions.GET(REG.C))
+        asm_code.append(Instructions.SUB(REG.D))
+        asm_code.append(Instructions.ADD(REG.D))
+        asm_code.append(Instructions.SUB(REG.C))
+    else:
+        raise Exception("Nieprawidlowa operacja")
 
-    return asm_code
+    return [asm_code, negation_mode]
 
 
 def load_num(reg: REG, val):
     asm_code = []
     asm_code.extend(Instructions.set_register_const(reg, val))
     return asm_code
-
-
-
-
-
-
-
 
 
 class Condition:
@@ -102,13 +112,15 @@ class ConditionNumNum(Condition):
 class ConditionPidNum(Condition):
     def __init__(self, val1, val2, compare_op):
         super(ConditionPidNum, self).__init__(compare_op, val1, val2)
+        self.negation_mode = False
 
     def translate(self, p):
         asm_code = []
-        # asm_code.append(Instructions.makeInstr('LOAD', REG.A))
-        # asm_code.append(Instructions.makeInstr('PUT', REG.C))
-        # asm_code.append(Instructions.set_register_const(REG.D, self.val2))
         asm_code.extend(Instructions.load_pid(REG.C, self.val1, self.line_number, self.parent_proc))
         asm_code.extend(load_num(REG.D, self.val2))
+        compare_obj = generate_compare(self.compare_operator)
+        asm_code.extend(compare_obj[0])
+        self.negation_mode = compare_obj[1]
+        return asm_code
 
 

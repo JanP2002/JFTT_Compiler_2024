@@ -239,15 +239,6 @@ class CommandPidAssignNumOpNum(Command):
         memory_manager: MemoryManager = MemoryManager()
         asm_code = []
 
-        # asm_code.extend(set_register_const(REG.A, num1))
-        # asm_code.extend(set_register_const(REG.B, num2))
-        # if operation == '+':
-        #     asm_code.extend(generate_adding(num1, num2))
-        # elif operation == '-':
-        #     asm_code.extend(generate_subtraction(num1, num2))
-        # else:
-        #     raise Exception("Nieprawidlowa operacja")
-
         if self.parent_procedure is not None:
             variable_id = self.parent_procedure + '##' + self.pid
             declaration = memory_manager.get_variable(variable_id, self.line_number)
@@ -290,6 +281,15 @@ class CommandPidAssignNumOpNum(Command):
         asm_code.append(Instructions.makeInstr('STORE', REG.B.value))
         declaration.is_initialized = True
         return asm_code
+
+# asm_code.extend(set_register_const(REG.A, num1))
+# asm_code.extend(set_register_const(REG.B, num2))
+# if operation == '+':
+#     asm_code.extend(generate_adding(num1, num2))
+# elif operation == '-':
+#     asm_code.extend(generate_subtraction(num1, num2))
+# else:
+#     raise Exception("Nieprawidlowa operacja")
 
 
 class ProcCall(Command):
