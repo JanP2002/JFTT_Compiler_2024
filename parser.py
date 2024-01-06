@@ -1,4 +1,4 @@
-from NonTerminals.Condition import Condition, ConditionNumNum
+from NonTerminals.Condition import Condition, ConditionNumNum, ConditionNumPid, ConditionPidNum, ConditionPidPid
 from NonTerminals.ProcCallParam import ProcCallParam
 from NonTerminals.ProcHead import ProcHead
 from NonTerminals.Procedure import Procedure
@@ -156,7 +156,32 @@ def p_command_if(p):
 
 def p_condition_num_num(p):
     """condition : num cop num"""
-    p[0] = ConditionNumNum(p[1], p[3], p[2], p.lineno(2))
+    p[0] = ConditionNumNum(p[1], p[3], p[2], p.lineno(1))
+
+
+def p_condition_num_pid(p):
+    """condition : num cop pid"""
+    p[0] = ConditionNumPid(p[1], p[3], p[2], p.lineno(1))
+
+
+def p_condition_pid_num(p):
+    """condition : pid cop num"""
+    p[0] = ConditionPidNum(p[1], p[3], p[2], p.lineno(1))
+
+
+def p_condition_pid_pid(p):
+    """condition : pid cop pid"""
+    p[0] = ConditionPidPid(p[1], p[3], p[2], p.lineno(1))
+
+
+def p_cop(p):
+    """cop : LT
+    | GT
+    | LE
+    | GE
+    | EQ
+    | NE"""
+    p[0] = p[1]
 
 
 def p_command_proc_call(p):

@@ -20,27 +20,27 @@ class COP(Enum):
 def generate_compare(cop: COP):
     asm_code = []
     negation_mode = False
-    if cop == COP.LT:
+    if cop == COP.LT.value:
         asm_code.append(Instructions.makeInstr('GET', REG.D))
         asm_code.append(Instructions.makeInstr('SUB', REG.C))
-    elif cop == COP.GT:
+    elif cop == COP.GT.value:
         asm_code.append(Instructions.makeInstr('GET', REG.C))
         asm_code.append(Instructions.makeInstr('SUB', REG.D))
-    elif cop == COP.LE: # not C > D:
+    elif cop == COP.LE.value: # not C > D:
         asm_code.append(Instructions.makeInstr('GET', REG.C))
         asm_code.append(Instructions.makeInstr('SUB', REG.D))
         negation_mode = True
-    elif cop == COP.GE: # not C < D
+    elif cop == COP.GE.value: # not C < D
         asm_code.append(Instructions.makeInstr('GET', REG.D))
         asm_code.append(Instructions.makeInstr('SUB', REG.C))
         negation_mode = True
-    elif cop == COP.EQ:
+    elif cop == COP.EQ.value:
         asm_code.append(Instructions.GET(REG.C))
         asm_code.append(Instructions.SUB(REG.D))
         asm_code.append(Instructions.ADD(REG.D))
         asm_code.append(Instructions.SUB(REG.C))
         negation_mode = True
-    elif cop == COP.NE:
+    elif cop == COP.NE.value:
         asm_code.append(Instructions.GET(REG.C))
         asm_code.append(Instructions.SUB(REG.D))
         asm_code.append(Instructions.ADD(REG.D))
@@ -112,7 +112,7 @@ class ConditionNumNum(Condition):
 
 class ConditionPidNum(Condition):
     def __init__(self, val1, val2, compare_op, line_number):
-        super(ConditionPidNum, self).__init__(compare_op, val1, val2, line_number)
+        super(ConditionPidNum, self).__init__(val1, val2, compare_op, line_number)
 
     def translate(self, p):
         asm_code = []
@@ -124,3 +124,29 @@ class ConditionPidNum(Condition):
         return asm_code
 
 
+class ConditionNumPid(Condition):
+    def __init__(self, val1, val2, compare_op, line_number):
+        super(ConditionNumPid, self).__init__(val1, val2, compare_op, line_number)
+
+    def translate(self, p):
+        asm_code = []
+        asm_code.extend(load_num(REG.C, self.val1))
+        asm_code.extend(Instructions.load_pid(REG.D, self.val2, self.line_number, self.parent_proc))
+        compare_obj = generate_compare(self.compare_operator)
+        asm_code.extend(compare_obj[0])
+        self.negation_mode = compare_obj[1]
+        return asm_code
+
+
+class ConditionPidPid(Condition):
+    def __init__(self, val1, val2, compare_op, line_number):
+        super(ConditionPidPid, self).__init__(val1, val2, compare_op, line_number)
+
+    def translate(self, p):
+        asm_code = []
+        asm_code.extend(Instructions.load_pid(REG.C, self.val1, self.line_number, self.parent_proc))
+        asm_code.extend(Instructions.load_pid(REG.D, self.val2, self.line_number, self.parent_proc))
+        compare_obj = generate_compare(self.compare_operator)
+        asm_code.extend(compare_obj[0])
+        self.negation_mode = compare_obj[1]
+        return asm_code

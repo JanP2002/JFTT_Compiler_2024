@@ -1,9 +1,9 @@
 PROCEDURE pa(a,b,c) IS
 x, y, z
 IN
-    IF 2 < 3 THEN
+    IF a = 4 THEN
         WRITE 7;
-        IF 4 < 4 THEN
+        IF 4 != 4 THEN
             WRITE 9;
             WRITE 12;
         ENDIF
@@ -20,7 +20,7 @@ IN
     b := 1;
     c := 1;
     pa(a, b, c);
-    IF 2 < 3 THEN
+    IF 2 <= 3 THEN
         WRITE 0;
         IF 4 =4 THEN
             a := 3;

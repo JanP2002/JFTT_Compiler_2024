@@ -99,20 +99,28 @@ def load_pid(reg: REG, pid, line_number, parent_proc=None):
     memory_manager: MemoryManager = MemoryManager()
     if parent_proc is not None:
         variable_id = parent_proc + "##" + pid
-        declaration = memory_manager.get_variable(pid, line_number)
+        declaration = memory_manager.get_variable(variable_id, line_number)
         address = declaration.get_memory_id()
         if declaration.is_param:
+            if (not declaration.is_initialized) and (not declaration.must_be_initialized):
+                declaration.set_uninitialized_error(pid, line_number)
             asm_code.extend(set_register_const(REG.B, address))
             asm_code.append(LOAD(REG.B))#w A mamy teraz adres zmiennej pid
             asm_code.append(LOAD(REG.A))#w A may teraz wartosc zmiennej pid
             if reg != REG.A:
                 asm_code.append(PUT(reg))
         else:
+            if not declaration.is_initialized:
+                raise MemoryManagerException("Blad w linii %i: nizainicjowana zmienna %s" % (line_number, pid))
+            asm_code.extend(set_register_const(REG.B, address))
             asm_code.append(LOAD(REG.B))
             if reg != REG.A:
                 asm_code.append(PUT(reg))
     else:
         declaration = memory_manager.get_variable(pid, line_number)
+        if not declaration.is_initialized:
+            raise MemoryManagerException("Blad w linii %i: nizainicjowana zmienna %s" % (line_number,
+                                                                                         pid))
         address = declaration.get_memory_id()
         asm_code.extend(set_register_const(REG.B, address))
         asm_code.append(LOAD(REG.B))
@@ -247,14 +255,24 @@ def set_register_const(reg, val):
     return asm_code
 
 
-def generate_adding(num1, num2):
-    asm_code = [ADD(REG.B)]
+def generate_adding():
+    asm_code = [GET(REG.B), ADD(REG.E)]
     return asm_code
 
 
-def generate_subtraction(num1, num2):
-    asm_code = [SUB(REG.B)]
+def generate_subtraction():
+    asm_code = [GET(REG.B), SUB(REG.E)]
     return asm_code
+
+def generate_multiplication():
+    asm_code = []
+    asm_code.append(GET(REG.E))
+    asm_code.append(SHR(REG.A))
+    asm_code.append(SHL(REG.A))
+    asm_code.append(PUT(REG.F))
+
+
+
 
 
 

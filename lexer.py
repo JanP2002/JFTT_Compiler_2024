@@ -14,7 +14,8 @@ reserved = {
     'THEN': 'THEN',
 }
 
-tokens = ['ASSIGN', 'SEMICOLON', 'COMMA', 'num', 'pid', 'l_paren', 'r_paren', 'op', 'cop'] + list(reserved.values())
+tokens = ['ASSIGN', 'SEMICOLON', 'COMMA', 'num', 'pid', 'l_paren', 'r_paren', 'op', 'EQ', 'NE',
+          'LT', 'GT', 'LE', 'GE'] + list(reserved.values())
 
 t_ignore = ' \t'
 t_SEMICOLON = r';'
@@ -24,7 +25,12 @@ t_pid = r'[_a-z]+'
 t_l_paren = r'\('
 t_r_paren = r'\)'
 t_op = r'[\+\-\*\/\%]'
-t_cop = r'=|(!=)|(\<)|(\>)|(\<=)|(\>=)'
+t_EQ = r'\='
+t_NE = r'!='
+t_LT = r'<'
+t_GT = r'>'
+t_LE = r'<='
+t_GE = r'>='
 
 
 
