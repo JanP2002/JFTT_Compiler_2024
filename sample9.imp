@@ -1,0 +1,89 @@
+# błąd: niezadeklarowana zmienna e w linii 5
+# a > 1
+# a ^ b mod c
+# ? 1234567890
+# ? 1234567890987654321
+# ? 987654321
+# > 674106858
+PROCEDURE pa(a,b,c) IS
+x, y, z
+IN
+    x := 111;
+    WRITE a;
+    WRITE b;
+    WRITE c;
+END
+
+PROCEDURE pb(a,b,c) IS
+x, y, z
+IN
+    WRITE a;
+    pa(a, b, c);
+    pa(c, b, a);
+    pa(a, a, a);
+    #WRITE z;
+    a := 701*2;
+    b := 702;
+    c := 703 + 5;
+END
+
+PROCEDURE pc(a,b,c) IS
+x, y, z
+IN
+    x := 111;
+    y := 112;
+    z := 113;
+    pb(a, b, c);
+    pa(x, y, c);
+    #a := 111;
+    #b := 112;
+    #c := 113;
+END
+
+PROCEDURE test(a,b,c) IS
+x, y, z
+IN
+    x := 301;
+    y := 302;
+    z := 303;
+    a := z;
+    b := a;
+    c := c;
+END
+
+
+PROCEDURE testb(a,b,c) IS
+x, y, z
+IN
+    x := a;
+    y := b;
+    z := y;
+    c := z;
+END
+
+PROGRAM IS
+    a, b, c #comm
+IN
+    IF 2 < 3 THEN
+        WRITE 0;
+    ENDIF
+    c:=77*3; #def
+    b := 10;
+    a := c;
+    WRITE a;
+    WRITE b;
+    WRITE c;
+    test(a, b, c);
+    WRITE a;
+    WRITE b;
+    WRITE c;
+    #testb(a, b, c);
+    pc(a, b, c);
+    pa(b, c, c);
+    WRITE a;
+    WRITE b;
+    WRITE c;
+    WRITE 1234567890;
+END
+
+

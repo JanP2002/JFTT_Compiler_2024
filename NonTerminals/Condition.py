@@ -64,43 +64,44 @@ class Condition:
         self.val2 = val2
         self.parent_proc = parent_proc
         self.line_number = line_number
+        self.negation_mode = False
 
     def translate(self, program):
         raise Exception("generateCode() not defined for %s" % self.__class__)
 
 
 class ConditionNumNum(Condition):
-    def __init__(self, val1, val2, compare_op):
-        super(ConditionNumNum, self).__init__(compare_op, val1, val2)
+    def __init__(self, val1, val2, compare_op, line_number):
+        super(ConditionNumNum, self).__init__(val1, val2, compare_op, line_number)
 
     def translate(self, p):
         asm_code = []
-        if self.compare_operator == COP.LT:
+        if self.compare_operator == COP.LT.value:
             if self.val1 < self.val2:
                 asm_code.extend(Instructions.set_register_const(REG.A, 1))
             else:
                 asm_code.extend(Instructions.set_register_const(REG.A, 0))
-        elif self.compare_operator == COP.GT:
+        elif self.compare_operator == COP.GT.value:
             if self.val1 > self.val2:
                 asm_code.extend(Instructions.set_register_const(REG.A, 1))
             else:
                 asm_code.extend(Instructions.set_register_const(REG.A, 0))
-        elif self.compare_operator == COP.GE:
+        elif self.compare_operator == COP.GE.value:
             if self.val1 >= self.val2:
                 asm_code.extend(Instructions.set_register_const(REG.A, 1))
             else:
                 asm_code.extend(Instructions.set_register_const(REG.A, 0))
-        elif self.compare_operator == COP.LE:
+        elif self.compare_operator == COP.LE.value:
             if self.val1 <= self.val2:
                 asm_code.extend(Instructions.set_register_const(REG.A, 1))
             else:
                 asm_code.extend(Instructions.set_register_const(REG.A, 0))
-        elif self.compare_operator == COP.EQ:
+        elif self.compare_operator == COP.EQ.value:
             if self.val1 == self.val2:
                 asm_code.extend(Instructions.set_register_const(REG.A, 1))
             else:
                 asm_code.extend(Instructions.set_register_const(REG.A, 0))
-        elif self.compare_operator == COP.NE:
+        elif self.compare_operator == COP.NE.value:
             if self.val1 != self.val2:
                 asm_code.extend(Instructions.set_register_const(REG.A, 1))
             else:
@@ -110,9 +111,8 @@ class ConditionNumNum(Condition):
 
 
 class ConditionPidNum(Condition):
-    def __init__(self, val1, val2, compare_op):
-        super(ConditionPidNum, self).__init__(compare_op, val1, val2)
-        self.negation_mode = False
+    def __init__(self, val1, val2, compare_op, line_number):
+        super(ConditionPidNum, self).__init__(compare_op, val1, val2, line_number)
 
     def translate(self, p):
         asm_code = []

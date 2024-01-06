@@ -1,41 +1,34 @@
-# ? 0
-# ? 1
-# > 46368
-# > 28657
-
-PROCEDURE pa(a,b) IS
+PROCEDURE pa(a,b,c) IS
+x, y, z
 IN
-  a:=a+b;
-  b:=a-b;
+    IF 2 < 3 THEN
+        WRITE 7;
+        IF 4 < 4 THEN
+            WRITE 9;
+            WRITE 12;
+        ENDIF
+        WRITE 88;
+    ENDIF
+    WRITE 100;
 END
 
-PROCEDURE pb(a,b) IS
-IN
-  pa(a,b);
-  pa(a,b);
-END
-
-PROCEDURE pc(a,b) IS
-IN
-  pb(a,b);
-  pb(a,b);
-  pb(a,b);
-END
-
-PROCEDURE pd(a,b) IS
-IN
-  pc(a,b);
-  pc(a,b);
-  pc(a,b);
-  pc(a,b);
-END
 
 PROGRAM IS
-  a,b
+a, b, c
 IN
-  READ a;
-  READ b;
-  pd(a,b);
-  WRITE a;
-  WRITE b;
+    a := 1;
+    b := 1;
+    c := 1;
+    pa(a, b, c);
+    IF 2 < 3 THEN
+        WRITE 0;
+        IF 4 =4 THEN
+            a := 3;
+            WRITE a;
+        ENDIF
+        WRITE 11;
+    ENDIF
+    WRITE 1234567890;
 END
+
+

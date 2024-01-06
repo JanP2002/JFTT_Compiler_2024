@@ -1,7 +1,9 @@
 import Instructions
 from typing import List
 
+from LabelGenerator import LabelGenerator
 from MemoryManager import MemoryManager, MemoryManagerException
+from NonTerminals.Condition import Condition
 from NonTerminals.ProcCallParam import ProcCallParam
 from Register import REG
 
@@ -282,6 +284,16 @@ class CommandPidAssignNumOpNum(Command):
         declaration.is_initialized = True
         return asm_code
 
+
+class CommandPidAssignPidOpPid(Command):
+    def __init__(self, pid, val1, val2, operation, line_number):
+        super(CommandPidAssignPidOpPid, self).__init__(line_number)
+
+    def translate(self, p):
+        pass
+
+
+
 # asm_code.extend(set_register_const(REG.A, num1))
 # asm_code.extend(set_register_const(REG.B, num2))
 # if operation == '+':
@@ -290,6 +302,37 @@ class CommandPidAssignNumOpNum(Command):
 #     asm_code.extend(generate_subtraction(num1, num2))
 # else:
 #     raise Exception("Nieprawidlowa operacja")
+
+class CommandIf(Command):
+    def __init__(self, condition: Condition, commands: List[Command], line_number):
+        super(CommandIf, self).__init__(line_number)
+        self.condition = condition
+        self.commands = commands
+
+    def translate(self, p):
+        self.condition.parent_proc = self.parent_procedure
+        asm_code = []
+        label_generator: LabelGenerator = LabelGenerator()
+        asm_code.extend(self.condition.translate(p))
+        if_end_label = label_generator.next_if_end_label()
+        if self.condition.negation_mode:
+            asm_code.append(Instructions.JPOS(if_end_label))
+        else:
+            asm_code.append(Instructions.JZERO(if_end_label))
+
+        # self.commands[0].set_parent_procedure(self.parent_procedure)
+        # first_command = self.commands[0].translate(p)
+        # first_command[0] = if_end_label + ": " + first_command[0]
+        # asm_code.extend(first_command)
+        for i in range(0, len(self.commands)):
+            self.commands[i].set_parent_procedure(self.parent_procedure)
+            asm_code.extend(self.commands[i].translate(p))
+
+        asm_code.append(Instructions.LABEL(if_end_label))
+        return asm_code
+
+
+
 
 
 class ProcCall(Command):

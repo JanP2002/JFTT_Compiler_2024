@@ -54,22 +54,50 @@ class Program:
         return self.instructions
 
     def get_asm_code(self):
-        asm_list = self.translate()
+        asm_list_labels = self.translate()
+        asm_list = []
+        tmp_label = None
+        for code_line in asm_list_labels:
+            line_list = code_line.split()
+            if not line_list[0] == 'LABEL':
+                if tmp_label is None:
+                    asm_list.append(code_line)
+                else:
+                    code_tmp = tmp_label + " " + code_line
+                    asm_list.append(code_tmp)
+                    tmp_label = None
+            else:
+                tmp_label = line_list[1]
+
         for proc in self.procedures:
             asm_list[proc.label] = proc.pid + ": " + asm_list[proc.label]
         labels_dict = dict()
-        labels_usages = []
+        jump_usages = []
+        jzero_usages = []
+        jpos_usages = []
         for i in range(len(asm_list)):
             line_list = asm_list[i].split()
             if line_list[0].endswith(":"):
                 labels_dict.update({line_list[0][:-1]: i})
                 asm_list[i] = asm_list[i].split(" ", 1)[1]#usuniecie etykiety
             elif line_list[0] == 'JUMP' and line_list[1].endswith(":"):
-                labels_usages.append(i)
-        for usage in labels_usages:
+                jump_usages.append(i)
+            elif line_list[0] == 'JZERO' and line_list[1].endswith(":"):
+                jzero_usages.append(i)
+            elif line_list[0] == 'JPOS' and line_list[1].endswith(":"):
+                jpos_usages.append(i)
+        for usage in jump_usages:
             line_list = asm_list[usage].split()
             label_value = labels_dict[line_list[1][:-1]]
             asm_list[usage] = Instructions.makeInstr('JUMP', label_value)
+        for usage in jzero_usages:
+            line_list = asm_list[usage].split()
+            label_value = labels_dict[line_list[1][:-1]]
+            asm_list[usage] = Instructions.makeInstr('JZERO', label_value)
+        for usage in jpos_usages:
+            line_list = asm_list[usage].split()
+            label_value = labels_dict[line_list[1][:-1]]
+            asm_list[usage] = Instructions.makeInstr('JPOS', label_value)
 
         asm_code = ""
         for w in asm_list:

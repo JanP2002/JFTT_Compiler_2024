@@ -1,3 +1,4 @@
+from NonTerminals.Condition import Condition, ConditionNumNum
 from NonTerminals.ProcCallParam import ProcCallParam
 from NonTerminals.ProcHead import ProcHead
 from NonTerminals.Procedure import Procedure
@@ -6,7 +7,7 @@ import ply.yacc as yacc
 from Program import Program
 from NonTerminals.Main import Main
 from NonTerminals.Command import CommandWriteNum, CommandWritePid, CommandReadPid, CommandPidAssignNumber, \
-    CommandPidAssignPid, ProcCall, CommandPidAssignNumOpNum
+    CommandPidAssignPid, ProcCall, CommandPidAssignNumOpNum, CommandIf
 from NonTerminals.Declarations import VarDeclaration, VarParamDeclaration
 
 
@@ -146,6 +147,16 @@ def p_command_pid_assign_pid(p):
 def p_command_pid_assign_num_op_num(p):
     """command : pid ASSIGN num op num SEMICOLON"""
     p[0] = CommandPidAssignNumOpNum(p[1], p[3], p[5], p[4], p.lineno(2))
+
+
+def p_command_if(p):
+    """command : IF condition THEN commands ENDIF"""
+    p[0] = CommandIf(p[2], p[4], p.lineno(1))
+
+
+def p_condition_num_num(p):
+    """condition : num cop num"""
+    p[0] = ConditionNumNum(p[1], p[3], p[2], p.lineno(2))
 
 
 def p_command_proc_call(p):

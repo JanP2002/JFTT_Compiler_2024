@@ -86,6 +86,10 @@ def HALT(p):
     return makeInstr('HALT')
 
 
+def LABEL(label_str):
+    return makeInstr("LABEL", label_str)
+
+
 def evalToRegInstr(value, reg):
     return set_register_const(reg, value)
 
@@ -101,6 +105,12 @@ def load_pid(reg: REG, pid, line_number, parent_proc=None):
             asm_code.extend(set_register_const(REG.B, address))
             asm_code.append(LOAD(REG.B))#w A mamy teraz adres zmiennej pid
             asm_code.append(LOAD(REG.A))#w A may teraz wartosc zmiennej pid
+            if reg != REG.A:
+                asm_code.append(PUT(reg))
+        else:
+            asm_code.append(LOAD(REG.B))
+            if reg != REG.A:
+                asm_code.append(PUT(reg))
     else:
         declaration = memory_manager.get_variable(pid, line_number)
         address = declaration.get_memory_id()
