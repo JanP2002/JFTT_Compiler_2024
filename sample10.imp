@@ -19,7 +19,6 @@ IN
     WRITE f;
     IF d >= e THEN
         pa(d, e, f);
-        WRITE 888;
     ENDIF
 END
 

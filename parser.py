@@ -7,7 +7,7 @@ import ply.yacc as yacc
 from Program import Program
 from NonTerminals.Main import Main
 from NonTerminals.Command import CommandWriteNum, CommandWritePid, CommandReadPid, CommandPidAssignNumber, \
-    CommandPidAssignPid, ProcCall, CommandPidAssignNumOpNum, CommandIf
+    CommandPidAssignPid, ProcCall, CommandPidAssignNumOpNum, CommandIf, CommandIfElse
 from NonTerminals.Declarations import VarDeclaration, VarParamDeclaration
 
 
@@ -152,6 +152,11 @@ def p_command_pid_assign_num_op_num(p):
 def p_command_if(p):
     """command : IF condition THEN commands ENDIF"""
     p[0] = CommandIf(p[2], p[4], p.lineno(1))
+
+
+def p_command_if_else(p):
+    """command : IF condition THEN commands ELSE commands ENDIF"""
+    p[0] = CommandIfElse(p[2], p[4], p[6], p.lineno(1))
 
 
 def p_condition_num_num(p):

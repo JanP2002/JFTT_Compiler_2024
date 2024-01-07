@@ -320,10 +320,6 @@ class CommandIf(Command):
         else:
             asm_code.append(Instructions.JZERO(if_end_label))
 
-        # self.commands[0].set_parent_procedure(self.parent_procedure)
-        # first_command = self.commands[0].translate(p)
-        # first_command[0] = if_end_label + ": " + first_command[0]
-        # asm_code.extend(first_command)
         for i in range(0, len(self.commands)):
             self.commands[i].set_parent_procedure(self.parent_procedure)
             asm_code.extend(self.commands[i].translate(p))
@@ -332,7 +328,42 @@ class CommandIf(Command):
         return asm_code
 
 
+class CommandIfElse(Command):
+    def __init__(self, condition: Condition, commands1: List[Command], commands2: List[Command], line_number):
+        super(CommandIfElse, self).__init__(line_number)
+        self.condition = condition
+        self.commands1 = commands1
+        self.commands2 = commands2
 
+    def translate(self, p):
+        self.condition.parent_proc = self.parent_procedure
+        asm_code = []
+        label_generator: LabelGenerator = LabelGenerator()
+        asm_code.extend(self.condition.translate(p))
+        if_end_label = label_generator.next_if_end_label()
+        else_label = label_generator.next_else_label()
+        if self.condition.negation_mode:
+            asm_code.append(Instructions.JPOS(else_label))
+        else:
+            asm_code.append(Instructions.JZERO(else_label))
+
+        for i in range(0, len(self.commands1)):
+            self.commands1[i].set_parent_procedure(self.parent_procedure)
+            asm_code.extend(self.commands1[i].translate(p))
+
+        asm_code.append(Instructions.JUMP(if_end_label))
+
+        self.commands2[0].set_parent_procedure(self.parent_procedure)
+        first_command = self.commands2[0].translate(p)
+        first_command[0] = else_label + " " + first_command[0]
+        asm_code.extend(first_command)
+
+        for i in range(1, len(self.commands2)):
+            self.commands2[i].set_parent_procedure(self.parent_procedure)
+            asm_code.extend(self.commands2[i].translate(p))
+
+        asm_code.append(Instructions.LABEL(if_end_label))
+        return asm_code
 
 
 class ProcCall(Command):

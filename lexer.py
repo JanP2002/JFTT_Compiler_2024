@@ -12,6 +12,7 @@ reserved = {
     'PROCEDURE': 'PROCEDURE',
     'IF': 'IF',
     'THEN': 'THEN',
+    'ELSE': 'ELSE'
 }
 
 tokens = ['ASSIGN', 'SEMICOLON', 'COMMA', 'num', 'pid', 'l_paren', 'r_paren', 'op', 'EQ', 'NE',
